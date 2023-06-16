@@ -25,7 +25,7 @@ const generateOTP = () => {
 
 const register = async (req) => {
   const { name, email, phone_number, password } = req.body;
-  if (!name || !email || !phone_number, !password) {
+  if (!name || !email || !phone_number || !password) {
     throw new ApplicationError(422, "Nama, email, nomor telepon, dan password wajib diisi.");
   }
 
@@ -46,7 +46,7 @@ const register = async (req) => {
     is_verified: false
   });
 
-    return user; 
+  return user; 
 }
 
 const login = async (req) => {
