@@ -15,7 +15,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Passanger.init({
-    id: DataTypes.UUID,
+    id: {
+      allowNull: false,
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4
+    },
     transaction_id: {
       type: DataTypes.UUID,
       references: {

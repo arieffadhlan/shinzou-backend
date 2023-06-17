@@ -9,7 +9,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Class.init({
-    id: DataTypes.INTEGER,
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
     class_name: DataTypes.STRING,
     price: DataTypes.INTEGER
   }, {

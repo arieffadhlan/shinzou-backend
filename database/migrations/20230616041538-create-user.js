@@ -38,7 +38,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.CHAR(6)
       },
-      password_reset_token: {
+      token: {
         allowNull: false,
         type: Sequelize.UUID
       },

@@ -11,7 +11,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Seat.init({
-    id: DataTypes.INTEGER,
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
     flight_id: {
       type: DataTypes.UUID,
       references: {
