@@ -1,4 +1,3 @@
-const ApplicationError = require("../errors/ApplicationError");
 const authService = require("../services/authService");
 
 const register = async (req, res) => {
