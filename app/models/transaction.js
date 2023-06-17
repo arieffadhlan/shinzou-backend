@@ -1,6 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
-User.beforeCreate((user) => user.id = uuidv4());
+const { v4: uuidv4 } = require("uuid");
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
     static associate(models) {
@@ -16,7 +16,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Transaction.init({
-    id: DataTypes.UUID,
+    id: {
+      allowNull: false,
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4
+    },
     flight_id: {
       type: DataTypes.UUID,
       references: {

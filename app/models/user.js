@@ -9,7 +9,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   User.init({
-    id: DataTypes.UUID,
+    id: {
+      allowNull: false,
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4
+    },
     name: DataTypes.STRING,
     email: DataTypes.STRING,
     phone_number: DataTypes.STRING,
@@ -17,14 +22,14 @@ module.exports = (sequelize, DataTypes) => {
     is_verified: DataTypes.BOOLEAN,
     role: DataTypes.STRING,
     otp: DataTypes.CHAR(6),
-    password_reset_token: DataTypes.UUID
+    token: DataTypes.UUID
   }, {
     sequelize,
     modelName: "User",
   });
   User.beforeCreate((user) => {
     user.id = uuidv4();
-    user.password_reset_token = uuidv4();
+    user.token = uuidv4();
   });
   return User;
 };

@@ -7,7 +7,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Airline.init({
-    id: DataTypes.INTEGER,
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
     airline_code: DataTypes.CHAR(3),
     airline_name: DataTypes.STRING,
     airline_image: DataTypes.STRING

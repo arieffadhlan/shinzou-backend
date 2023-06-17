@@ -25,7 +25,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Flight.init({
-    id: DataTypes.UUID,
+    id: {
+      allowNull: false,
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4
+    },
     origin_airport_id: {
       type: DataTypes.INTEGER,
       references: {
