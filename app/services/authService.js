@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 const userRepository = require("../repositories/userRepository");
 const ApplicationError = require("../errors/ApplicationError");
 
@@ -16,11 +17,11 @@ const createToken = (payload) => {
 }
 
 const generateOTP = () => {
-  let OTP = ""
+  let otp = "";
   for (let i = 0; i < 6; i++) {
-    OTP += Math.floor(Math.random() * 10);
+    otp += Math.floor(Math.random() * 10);
   }
-  return OTP;
+  return otp;
 }
 
 const register = async (req) => {
@@ -31,7 +32,7 @@ const register = async (req) => {
 
   const isUserExist = await userRepository.getUserByEmail(email);
   if (isUserExist) {
-    throw new ApplicationError(422, "Email telah terdaftar.")
+    throw new ApplicationError(422, "Email telah terdaftar.");
   }
 
   const encryptedPassword = encryptPassword(password);
@@ -46,7 +47,30 @@ const register = async (req) => {
     is_verified: false
   });
 
-  return user; 
+  // Send email for email verification
+  try {
+    const mailSettings = {
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "ariffadhlan12@gmail.com",
+        pass: "pruryxgpczkhnbdr"
+      }
+    };
+
+    const transporter = nodemailer.createTransport(mailSettings);
+    await transporter.sendMail({
+      from: mailSettings.auth.user,
+      to: mailSettings.auth.user,
+      subject: "Test email",
+      text: `OTP Anda adalah ${otp}`
+    })
+
+    return user;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 const login = async (req) => {
