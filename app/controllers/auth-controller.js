@@ -36,8 +36,11 @@ const verifyOTP = async (req, res) => {
 const login = async (req, res) => {
   try {
     const user = await authService.login(req);
-
-    res.cookie("token", user.token, { httpOnly: true })
+    
+    res.cookie("token", user.token, { 
+        httpOnly: true, 
+        expires: new Date(Date.now() + 60000),
+      })
       .status(201)
       .json({
         status: "Success",
