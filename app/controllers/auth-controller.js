@@ -37,16 +37,11 @@ const login = async (req, res) => {
   try {
     const user = await authService.login(req);
     
-    res.cookie("token", user.token, { 
-        httpOnly: true, 
-        expires: new Date(Date.now() + 60000),
-      })
-      .status(201)
-      .json({
-        status: "Success",
-        message: "Login telah berhasil.",
-        token: user.token
-      });
+    res.status(201).json({
+      status: "Success",
+      message: "Login telah berhasil.",
+      token: user.token
+    });
   } catch (error) {
     res.status(error.statusCode || 400).json({
       status: "Error",
@@ -87,20 +82,10 @@ const resetPassword = async (req, res) => {
   }
 }
 
-const logout = (req, res) => {
-  return res.clearCookie("token")
-    .status(200)
-    .json({
-      status: "Success",
-      message: "Logout telah berhasil"
-    });
-}
-
 module.exports = {
   register,
   verifyOTP,
   login,
   forgotPassword,
   resetPassword,
-  logout
 }

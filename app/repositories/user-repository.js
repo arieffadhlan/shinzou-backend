@@ -10,6 +10,12 @@ const getUserByEmail = (email) => {
   });
 }
 
+const getUserByOTP = (otp) => {
+  return User.findOne({
+    where: { otp }
+  });
+
+}
 const getUserByToken = (token) => {
   return User.findOne({
     where: { token }
@@ -29,6 +35,7 @@ const updateUser = (id, args) => {
 module.exports = {
   getUser,
   getUserByEmail,
+  getUserByOTP,
   getUserByToken,
   createUser,
   updateUser
