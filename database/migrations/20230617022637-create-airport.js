@@ -17,9 +17,13 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      airport_location: {
+      location: {
         allowNull: false,
         type: Sequelize.STRING
+      },
+      location_acronym: {
+        allowNull: false,
+        type: Sequelize.CHAR(3)
       },
       createdAt: {
         allowNull: false,

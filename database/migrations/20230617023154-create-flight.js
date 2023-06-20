@@ -32,14 +32,6 @@ module.exports = {
           key: "id"
         }
       },
-      class_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: "Classes",
-          key: "id"
-        }
-      },
       departure_datetime: {
         allowNull: false,
         type: Sequelize.DATE
@@ -55,6 +47,19 @@ module.exports = {
       description: {
         allowNull: false,
         type: Sequelize.TEXT
+      },
+      class: {
+        allowNull: false,
+        type: Sequelize.ENUM([
+          "Economy", 
+          "Preminum Economy",
+          "Business",
+          "First Class"
+        ])
+      },
+      price: {
+        allowNull: false,
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

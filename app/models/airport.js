@@ -22,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     airport_code: DataTypes.CHAR(3),
     airport_name: DataTypes.STRING,
-    airport_location: DataTypes.STRING
+    location: DataTypes.STRING,
+    location_acronym: DataTypes.CHAR(3)
   }, {
     sequelize,
     modelName: 'Airport',
