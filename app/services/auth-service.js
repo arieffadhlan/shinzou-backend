@@ -15,7 +15,7 @@ const checkPassword = (password, encryptedPassword) => {
 }
 
 const createToken = (payload) => {
-  return jwt.sign(payload, JWT_SIGNATURE_KEY);
+  return jwt.sign(payload, JWT_SIGNATURE_KEY, { expiresIn: "24h" });
 }
 
 const generateOTP = () => {
@@ -82,20 +82,17 @@ const register = async (req) => {
 
 const verifyOTP = async (req) => {
   try {
-    const { token } = req.params;
     const { otp } = req.body;
     
-    const user = await userRepository.getUserByToken(token);
-    if (user && user.otp !== otp) {
+    const user = await userRepository.getUserByOTP(otp);
+    if (!user) {
       throw new ApplicationError(401, "Maaf, Kode OTP Salah.");
     }
   
     const newOTP = generateOTP();
-    const newToken = generateUUIDToken();
     return await userRepository.updateUser(user.id, {
       is_verified: true,
       otp: newOTP,
-      token: newToken
     }); 
   } catch (error) {
     if (error instanceof ApplicationError) {
@@ -158,7 +155,7 @@ const forgotPassword = async (req) => {
         <div style="font-size: 14px;">
           <span>Hai ${user.name},</span> <br /> <br />
           <span>Anda menerima email ini karena kami menerima permintan untuk mengatur ulang password akun Anda. Silakan klik link di bawah untuk mengatur ulang password Anda.</span> <br /> <br />
-          <a href="http://localhost:3000/reset-password/${user.token}" style="color: #222">Reset Password</a> <br /> <br />
+          <a href="http://localhost:3000/auth/reset-password/${user.token}" style="color: #222">Reset Password</a> <br /> <br />
           <span>Jika Anda tidak meminta pengaturan ulang password, maka Anda tidak perlu melakukan apapun dan silakan abaikan email ini.</span> <br /> <br />
           <span>Terima kasih,</span> <br />
           <span>Tim Shinzou</span>
