@@ -11,7 +11,7 @@ module.exports = {
       },
       airline_code: {
         allowNull: false,
-        type: Sequelize.CHAR(3)
+        type: Sequelize.CHAR(2)
       },
       airline_name: {
         allowNull: false,

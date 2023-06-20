@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    airline_code: DataTypes.CHAR(3),
+    airline_code: DataTypes.CHAR(2),
     airline_name: DataTypes.STRING,
     airline_image: DataTypes.STRING
   }, {

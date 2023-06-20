@@ -11,4 +11,48 @@ router.post("/verify", controllers.authController.verifyOTP);
 router.post("/forgot-password", controllers.authController.forgotPassword);
 router.post("/reset-password/:token", controllers.authController.resetPassword);
 
+// Airport
+router.get("/airport", 
+  middlewares.authorize,
+  controllers.airportController.getAirports
+);
+router.get("/airport/:id", 
+  middlewares.authorize,
+  controllers.airportController.getAirport
+);
+router.post("/airport", 
+  middlewares.authorize,
+  controllers.airportController.addAirport
+);
+router.put("/airport/:id", 
+  middlewares.authorize,
+  controllers.airportController.updateAirport
+);
+router.delete("/airport/:id", 
+  middlewares.authorize,
+  controllers.airportController.deleteAirport
+);
+
+// Airline
+router.get("/airline", 
+  middlewares.authorize,
+  controllers.airlineController.getAirlines
+);
+router.get("/airline/:id", 
+  middlewares.authorize,
+  controllers.airlineController.getAirline
+);
+router.post("/airline", 
+  middlewares.authorize,
+  controllers.airlineController.addAirline
+);
+router.put("/airline/:id", 
+  middlewares.authorize,
+  controllers.airlineController.updateAirline
+);
+router.delete("/airline/:id", 
+  middlewares.authorize,
+  controllers.airlineController.deleteAirline
+);
+
 module.exports = router;
