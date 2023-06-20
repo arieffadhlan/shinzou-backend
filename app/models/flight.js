@@ -16,10 +16,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "airline_id",
         as: "airline"
       });
-      this.belongsTo(models.Class, {
-        foreignKey: "class_id",
-        as: "class"
-      });
       this.belongsTo(models.Transaction, { as: "transaction" });
       this.belongsTo(models.Seat, { as: "seat" });
     }
@@ -52,17 +48,17 @@ module.exports = (sequelize, DataTypes) => {
         key: "id"
       }
     },
-    class_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: "Class",
-        key: "id"
-      }
-    },
     departure_datetime: DataTypes.DATE,
     arrival_datetime: DataTypes.DATE,
     capacity: DataTypes.INTEGER,
-    description: DataTypes.TEXT
+    description: DataTypes.TEXT,
+    class: DataTypes.ENUM([
+      "Economy", 
+      "Preminum Economy",
+      "Business",
+      "First Class"
+    ]),
+    price: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: "Flight",
