@@ -5,8 +5,8 @@
   "repository": "https://github.com/arieffadhlan/shinzou-backend.git",
   "license": "MIT",
   "scripts": {
-    "start": "bin/www",
-    "dev": "nodemon -q bin/www",
+    "start": "node -r dotenv/config bin/www",
+    "develop": "nodemon -r dotenv/config bin/www",
     "test": "jest --detectOpenHandles",
     "db:create": "sequelize db:create",
     "db:drop": "sequelize db:drop",
