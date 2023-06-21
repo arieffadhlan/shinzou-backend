@@ -2,45 +2,43 @@
 /** @type {import("sequelize-cli").Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Users", {
+    await queryInterface.createTable("Passangers", {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID
       },
+      transaction_id: {
+        allowNull: false,
+        type: Sequelize.UUID,
+        references: {
+          model: "Transactions",
+          key: "id"
+        }
+      },
+      seat_id: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Seats",
+          key: "id"
+        }
+      },
+      title: {
+        allowNull: false,
+        type: Sequelize.ENUM(["Mr", "Miss"])
+      },
       name: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      email: {
-        allowNull: false,
+      family_name: {
+        allowNull: true,
         type: Sequelize.STRING
       },
       phone_number: {
         allowNull: false,
         type: Sequelize.STRING
-      },
-      password: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      is_verified: {
-        allowNull: false,
-        defaultValue: false,
-        type: Sequelize.BOOLEAN
-      },
-      role: {
-        allowNull: false,
-        defaultValue: "User",
-        type: Sequelize.STRING
-      },
-      otp: {
-        allowNull: false,
-        type: Sequelize.CHAR(6)
-      },
-      token: {
-        allowNull: false,
-        type: Sequelize.UUID
       },
       createdAt: {
         allowNull: false,
@@ -53,6 +51,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Users");
+    await queryInterface.dropTable("Passangers");
   }
 };
