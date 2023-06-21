@@ -1,35 +1,41 @@
 const express = require("express");
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../docs/openapi.json');
 const controllers =  require("../app/controllers");
 const middlewares = require("../app/middlewares");
 
 const router = express.Router();
 
+// Swagger UI Documentation
+router.use("/api-docs", swaggerUi.serve);
+router.get("/api-docs", swaggerUi.setup(swaggerDocument));
+
 // Auth
-router.post("/register", controllers.authController.register);
-router.post("/login", controllers.authController.login);
-router.post("/verify", controllers.authController.verifyOTP);
-router.post("/forgot-password", controllers.authController.forgotPassword);
-router.post("/reset-password/:token", controllers.authController.resetPassword);
+router.post("/api/v1/register", controllers.authController.register);
+router.post("/api/v1/login", controllers.authController.login);
+router.post("/api/v1/verify", controllers.authController.verifyOTP);
+router.post("/api/v1/forgot-password", controllers.authController.forgotPassword);
+router.post("/api/v1/reset-password/:token", controllers.authController.resetPassword);
 
 // Airport
-router.get("/airport", middlewares.authorize, controllers.airportController.getAirports);
-router.get("/airport/:id", middlewares.authorize, controllers.airportController.getAirport);
-router.post("/airport", middlewares.authorize, controllers.airportController.addAirport);
-router.put("/airport/:id", middlewares.authorize, controllers.airportController.updateAirport);
-router.delete("/airport/:id", middlewares.authorize, controllers.airportController.deleteAirport);
+router.get("/api/v1/airport", middlewares.authorize, controllers.airportController.getAirports);
+router.get("/api/v1/airport/:id", middlewares.authorize, controllers.airportController.getAirport);
+router.post("/api/v1/airport", middlewares.authorize, controllers.airportController.addAirport);
+router.put("/api/v1/airport/:id", middlewares.authorize, controllers.airportController.updateAirport);
+router.delete("/api/v1/airport/:id", middlewares.authorize, controllers.airportController.deleteAirport);
 
 // Airline
-router.get("/airline", middlewares.authorize, controllers.airlineController.getAirlines);
-router.get("/airline/:id", middlewares.authorize, controllers.airlineController.getAirline);
-router.post("/airline", middlewares.authorize, controllers.airlineController.addAirline);
-router.put("/airline/:id", middlewares.authorize, controllers.airlineController.updateAirline);
-router.delete("/airline/:id", middlewares.authorize, controllers.airlineController.deleteAirline);
+router.get("/api/v1/airline", middlewares.authorize, controllers.airlineController.getAirlines);
+router.get("/api/v1/airline/:id", middlewares.authorize, controllers.airlineController.getAirline);
+router.post("/api/v1/airline", middlewares.authorize, controllers.airlineController.addAirline);
+router.put("/api/v1/airline/:id", middlewares.authorize, controllers.airlineController.updateAirline);
+router.delete("/api/v1/airline/:id", middlewares.authorize, controllers.airlineController.deleteAirline);
 
 // Flight
-// router.get("/flight", middlewares.authorize, controllers.flightController.getFlights);
-// router.get("/flight/:id", middlewares.authorize, controllers.flightController.getFlight);
-// router.post("/flight", middlewares.authorize, controllers.flightController.addFlight);
-// router.put("/flight/:id", middlewares.authorize, controllers.flightController.updateFlight);
-// router.delete("/flight/:id", middlewares.authorize, controllers.flightController.deleteFlight);
+// router.get("/api/v1/flight", middlewares.authorize, controllers.flightController.getFlights);
+// router.get("/api/v1/flight/:id", middlewares.authorize, controllers.flightController.getFlight);
+// router.post("/api/v1/flight", middlewares.authorize, controllers.flightController.addFlight);
+// router.put("/api/v1/flight/:id", middlewares.authorize, controllers.flightController.updateFlight);
+// router.delete("/api/v1/flight/:id", middlewares.authorize, controllers.flightController.deleteFlight);
 
 module.exports = router;
