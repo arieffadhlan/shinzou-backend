@@ -1,0 +1,365 @@
+openapi: 3.0.3
+info:
+  title: Shinzou API
+  version: "1.0.0"
+servers:
+  - url: https://shinzou-api.up.railway.app/api/v1
+tags:
+  - name: Authentication
+    description: User authentication.
+paths:
+  /register:
+    post:
+      tags:
+        - Authentication
+      summary: Register new user.
+      description: Register new user account with member role.
+      requestBody:
+        description: Required fields (name, email, phone_number, password)
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterCredentials"
+      responses:
+        "201":
+          description: User account has been created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Success
+                  message:
+                    type: string
+                    example: Tautan verifikasi telah dikirim.
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        example: "af0d4403-9ede-4009-a5a2-220b0597024b"
+                      name:
+                        type: string
+                        example: John Doe
+                      email:
+                        type: string
+                        example: johndoe@gmail.com
+                      phone_number:
+                        type: string
+                        example: "08123456789"
+                      password:
+                        type: string
+                        example: "$2a$10$HcB6rrcnFLrhOFdHvsGfXumJbn.AQVPeqfFlVtYoO5MNzHl0/ISVO"
+                      is_verified:
+                        type: boolean
+                        example: false
+                      role:
+                        type: string
+                        example: User
+                      otp:
+                        type: string
+                        example: "818096"
+                      token:
+                        type: string
+                        format: uuid
+                        example: "da2b4450-d97a-4d9d-97cf-b657f15a0ea2"
+                      createdAt:
+                        type: string
+                        example: "2023-06-21T02:13:55.014Z"
+                      updatedAt:
+                        type: string
+                        example: "2023-06-21T02:13:55.014Z"
+        "422":
+          description: Error will appear if the email has been taken and there are fields that are not filled in.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/EmailAlreadyTaken"
+                  - $ref: "#/components/schemas/RegisterCredentialsRequired"
+              examples:
+                EmailAlreadyTaken:
+                  summary: Email already taken.
+                  value:
+                    status: Error
+                    message: Nama, email, nomor telepon, dan password wajib diisi.
+                RegisterCredentialsRequired:
+                  summary: Check the data is valid and must be filled in.
+                  value:
+                    status: Error
+                    message: Email telah terdaftar.
+  /verify:
+    post:
+      tags:
+        - Authentication
+      summary: Verify OTP.
+      description: Check the OTP code is valid or not.
+      requestBody:
+        description: Required fields (otp)
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                otp:
+                  type: string
+                  example: "123456"
+      responses:
+        "200":
+          description: The OTP code is valid and the account has been verified.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Success
+                  message:
+                    type: string
+                    example: Registrasi telah berhasil.
+        "401":
+          description: Unauthorize, invalid OTP code.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Maaf, Kode OTP Salah.
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: Login with user account.
+      description: Login and get token for authorization.
+      requestBody:
+        description: Required fields (email, password)
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginCredentials"
+      responses:
+        "201":
+          description: Login has been successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Success
+                  message:
+                    type: string
+                    example: Login telah berhasil.
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFmMGQ0NDAzLTllZGUtNDAwOS1hNWEyLTIyMGIwNTk3MDI0YiIsIm5hbWUiOiJNdWhhbW1hZCBBcmllZiBGYWRobGFuIiwiZW1haWwiOiJhcmlmZmFkaGxhbjEyQGdtYWlsLmNvbSIsInBob25lX251bWJlciI6IjA4MTIzNDU2Nzg5IiwiaWF0IjoxNjg3MzE2MTAxLCJleHAiOjE2ODc0MDI1MDF9.m49pEKBz5f5d9eNLJ_hy5nQQR1yBkSKGWFFrKrq1q2I
+        "401":
+          description: Unauthorize, invalid credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Identitas tersebut tidak sesuai dengan data kami.
+        "422":
+          description: Check the data is valid and must be filled in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Email dan password wajib diisi.
+  /forgot-password:
+    post:
+      tags:
+        - Authentication
+      summary: Send password reset link to email.
+      description: Send an email containing a link to the password reset page.
+      requestBody:
+        description: Required fields (email)
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: johndoe@gmail.com
+      responses:
+        "200":
+          description: Password reset link has been sent successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Success
+                  message:
+                    type: string
+                    example: Tautan reset password berhasil terkirim.
+        "404":
+          description: Email not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Alamat email tidak ditemukan.
+        "422":
+          description: Check the data is valid and must be filled in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Email wajib diisi.
+  /reset-password/{token}:
+    post:
+      tags:
+        - Authentication
+      summary: Reset account password.
+      description: Reset account password and update old password with new password.
+      parameters:
+        - name: token
+          in: path
+          description: Token of the user who wants to reset the password.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Required fields (password)
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: password_baru
+      responses:
+        "200":
+          description: Password reset link has been sent successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Success
+                  message:
+                    type: string
+                    example: Reset password berhasil.
+        "401":
+          description: Unauthorize, token is not valid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Terjadi kesalahan, silakan coba lagi.
+        "422":
+          description: Check the data is valid and must be filled in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  message:
+                    type: string
+                    example: Password wajib diisi.
+components:
+  schemas:
+    RegisterCredentials:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: johndoe@gmail.com
+        password:
+          type: string
+          example: password
+    RegisterCredentialsRequired:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+    LoginCredentials:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: johndoe@gmail.com
+        password:
+          type: string
+          example: password
+    EmailAlreadyTaken:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+  securitySchemes:
+    bearerToken:
+      description: 'Note: Token required, you may to login first then paste token code here'
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
