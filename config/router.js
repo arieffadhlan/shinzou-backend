@@ -1,6 +1,7 @@
 const express = require("express");
 const controllers =  require("../app/controllers");
 const middlewares = require("../app/middlewares");
+const { checkTicket, checkTicketQuery } = require("../app/middlewares/ticketMiddleware");
 
 const router = express.Router();
 
@@ -31,5 +32,11 @@ router.delete("/airline/:id", middlewares.authorize, controllers.airlineControll
 // router.post("/flight", middlewares.authorize, controllers.flightController.addFlight);
 // router.put("/flight/:id", middlewares.authorize, controllers.flightController.updateFlight);
 // router.delete("/flight/:id", middlewares.authorize, controllers.flightController.deleteFlight);
+
+// ticket
+router.get("/ticket/all", controllers.ticketController.getAllTicket);
+router.get("/ticket/:id", checkTicket, controllers.ticketController.getTicket);
+router.get("/ticket/detail/:id", controllers.ticketController.getDetailTicket);
+router.get("/ticket/", checkTicketQuery, controllers.ticketController.getTicketByQuery);
 
 module.exports = router;
