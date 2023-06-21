@@ -56,6 +56,10 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    // return queryInterface.bulkDelete("Airlines", null);
+    return queryInterface.bulkDelete("Airlines", null, { 
+      truncate: true, 
+      cascade: true ,
+      restartIdentity: true
+    });
   }
 };
