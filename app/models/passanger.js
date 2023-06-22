@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
         key: "id"
       }
     },
-    title: DataTypes.ENUM(["Mr", "Miss"]),
+    title: DataTypes.STRING,
     name: DataTypes.STRING,
     family_name: DataTypes.STRING,
     phone_number: DataTypes.STRING

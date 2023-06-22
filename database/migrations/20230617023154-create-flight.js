@@ -50,12 +50,7 @@ module.exports = {
       },
       class: {
         allowNull: false,
-        type: Sequelize.ENUM([
-          "Economy", 
-          "Preminum Economy",
-          "Business",
-          "First Class"
-        ])
+        type: Sequelize.STRING
       },
       price: {
         allowNull: false,

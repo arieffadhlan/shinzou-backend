@@ -3,11 +3,7 @@ const ApplicationError = require("../errors/ApplicationError");
 
 const getAirports = async () => {
   try {
-    const airports = await airportRepository.getAirports();
-    if (!airports) {
-      throw new ApplicationError(404, "Bandara tidak ditemukan.");
-    } 
-    
+    const airports = await airportRepository.getAirports();    
     return airports;
   } catch (error) {
     if (error instanceof ApplicationError) {

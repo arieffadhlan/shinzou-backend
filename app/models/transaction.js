@@ -4,9 +4,9 @@ const { v4: uuidv4 } = require("uuid");
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
     static associate(models) {
-      this.hasMany(models.Flight, {
+      this.belongsTo(models.Flight, {
         foreignKey: "flight_id",
-        as: "flights"
+        as: "flight"
       });
       this.belongsTo(models.User, {
         foreignKey: "user_id",
