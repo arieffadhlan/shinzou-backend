@@ -3,6 +3,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('../docs/openapi.json');
 const controllers =  require("../app/controllers");
 const middlewares = require("../app/middlewares");
+const { checkTicket, checkTicketQuery } = require("../app/middlewares/ticketMiddleware");
 
 const router = express.Router();
 
@@ -37,5 +38,11 @@ router.get("/api/v1/flight/:id", middlewares.authorize, controllers.flightContro
 router.post("/api/v1/flight", middlewares.authorize, controllers.flightController.addFlight);
 router.put("/api/v1/flight/:id", middlewares.authorize, controllers.flightController.updateFlight);
 router.delete("/api/v1/flight/:id", middlewares.authorize, controllers.flightController.deleteFlight);
+
+// ticket
+router.get("/ticket/all", controllers.ticketController.getAllTicket);
+router.get("/ticket/:id", checkTicket, controllers.ticketController.getTicket);
+router.get("/ticket/detail/:id", controllers.ticketController.getDetailTicket);
+router.get("/ticket/", checkTicketQuery, controllers.ticketController.getTicketByQuery);
 
 module.exports = router;
