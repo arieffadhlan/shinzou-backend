@@ -1,8 +1,6 @@
-const { ticketService } = require ("../services/ticket-service");
-const ApplicationError = require("../errors/ApplicationError");
+const ticketService  = require ("../services/ticket-service");
 
-
-exports.getAllTicket = async (req, res) => {
+const getAllTicket = async (req, res) => {
   
     try {
       
@@ -21,7 +19,7 @@ exports.getAllTicket = async (req, res) => {
     }
 };
 
-exports.getTicket = async (req, res) => {
+const getTicket = async (req, res) => {
     try {
       const ticket = req.ticket; 
       res.status(200).json({
@@ -37,7 +35,7 @@ exports.getTicket = async (req, res) => {
     }
   };
 
-  exports.getDetailTicket = async (req, res) => {
+  const getDetailTicket = async (req, res) => {
     try {
       const ticketId = req.params.id; //from params
       const ticketPayload = await ticketService.getDetailTicket(ticketId);
@@ -54,7 +52,7 @@ exports.getTicket = async (req, res) => {
     }
   };
 
-exports.getTicketBySearch = async (req, res) => {
+const getTicketBySearch = async (req, res) => {
   try {
     const ticket = req.ticket;
     res.status(200).json({
@@ -70,5 +68,10 @@ exports.getTicketBySearch = async (req, res) => {
   }
 };
 
-
+module.exports = {
+  getAllTicket,
+  getDetailTicket,
+  getTicket,
+  getTicketBySearch
+}
  

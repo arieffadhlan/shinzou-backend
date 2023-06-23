@@ -1,8 +1,8 @@
-const { ticketRepository } = require("../repositories/ticket-repository");
+const ticketRepository = require("../repositories/ticket-repository");
 const ApplicationError = require("../errors/ApplicationError");
 
 
-exports.createTicket = async (airplane_name, class_id, location_from, location_to, departure_time, arrival_time, airplane_image, status, passengers) => {
+const createTicket = async (airplane_name, class_id, location_from, location_to, departure_time, arrival_time, airplane_image, status, passengers) => {
     try {
         const ticketPayload = {
             airplane_name,
@@ -35,7 +35,7 @@ exports.createTicket = async (airplane_name, class_id, location_from, location_t
     }
 };
 
-exports.getAllTicket = async () => {
+const getAllTicket = async () => {
     
     try {
         const payload = await ticketRepository.getAllTicket();
@@ -60,7 +60,7 @@ exports.getAllTicket = async () => {
     }
 };
 
-exports.getTicketById = async (id) => {
+const getTicketById = async (id) => {
     try {
       const payload = await ticketRepository.getTicketById(id);
       const ticketPayload = {
@@ -83,7 +83,8 @@ exports.getTicketById = async (id) => {
 
   // search ticket
 //   
-exports.getTicketBySearch = async (location_from,location_to, departure_time, arrival_time, passengers) => {
+
+const getTicketBySearch = async (location_from,location_to, departure_time, arrival_time, passengers) => {
     try{
        const payload = await ticketRepository.getTicketBySearch(location_from,location_to, departure_time, arrival_time, passengers);
        console.log(payload);
@@ -109,7 +110,7 @@ exports.getTicketBySearch = async (location_from,location_to, departure_time, ar
     }
 };
 
-exports.getDetailTicket = async (ticketId) => {
+const getDetailTicket = async (ticketId) => {
         try {
           const payload = await ticketRepository.getDetailTicket(ticketId);
           const ticketPayload = {
@@ -132,3 +133,9 @@ exports.getDetailTicket = async (ticketId) => {
       exports.tes = async (id) => {
         return id;
         }
+module.exports = {
+    getAllTicket,
+    getDetailTicket,
+    getTicketById,
+    getTicketBySearch
+}

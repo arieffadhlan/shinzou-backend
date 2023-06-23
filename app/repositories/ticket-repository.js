@@ -1,32 +1,40 @@
 const { Ticket } = require("../models");
 
-exports.createTicket = (createArgs) => {
-    return Ticket.create(createArgs);
+const createTicket = (createArgs) => {
+    return Ticket.create(createArgs); 
 };
 
-exports.getAllTicket = () => {
+const getAllTicket = () => {
     return Ticket.findAll();
 };
   
-exports.getTicketById = (ticketId) => {
+const getTicketById = (ticketId) => {
     return Ticket.findOne({ where: { id: ticketId } });
 };
 
-exports.getDetailTicket = (ticketId) => {
+const getDetailTicket = (ticketId) => {
     return Ticket.findByPk(ticketId, {
       paranoid: false,
     });
 };
-// 
-exports.getTicketBySearch = (location_from,location_to, departure_time, arrival_time, passengers) => {
+// ,location_to, departure_time, arrival_time, passengers
+const getTicketBySearch = (location_from) => {
     return Ticket.findAll({
         where: {
             location_from: location_from,
-            location_to: location_to,
-            departure_time: departure_time,
-            arrival_time: arrival_time,
-            passengers: passengers
+            // location_to: location_to,
+            // departure_time: departure_time,
+            // arrival_time: arrival_time,
+            // passengers: passengers
         }
     });
 };
 
+
+module.exports = {
+    createTicket,
+    getAllTicket,
+    getDetailTicket,
+    getTicketById,
+    getTicketBySearch
+  }

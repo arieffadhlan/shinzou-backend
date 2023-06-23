@@ -33,8 +33,8 @@ router.delete("/api/v1/airline/:id", middlewares.authorize, controllers.airlineC
 
 // Ticket
 router.get("/", controllers.ticketController.getAllTicket);
-router.get("/search/:location_from/:location_to/:departure_time/:arrival_time/:passengers", middlewares.ticketMiddleware.checkTicketSearch, controllers.ticketController.getTicketBySearch);
-
+router.get("/api/v1/ticket/search/:location_from/:location_to/:departure_time/:arrival_time/:passengers", middlewares.checkTicketSearch, controllers.ticketController.getTicketBySearch);
+// 
 // Flight
 // router.get("/api/v1/flight", middlewares.authorize, controllers.flightController.getFlights);
 // router.get("/api/v1/flight/:id", middlewares.authorize, controllers.flightController.getFlight);
