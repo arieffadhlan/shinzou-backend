@@ -7,5 +7,5 @@ module.exports = {
   authController,
   airlineController,
   airportController,
-  flightController
+  flightController,
 }
