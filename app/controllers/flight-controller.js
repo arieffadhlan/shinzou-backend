@@ -33,6 +33,21 @@ const getFlight = async (req, res) => {
   }
 }
 
+const searchFlight = async (req, res) => {
+  try {
+    const flights = await flightService.searchFlight(req);
+    res.status(200).json({
+      status: "Success",
+      data: flights
+    });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({
+      status: "Error",
+      message: error.message
+    });
+  }
+}
+
 const addFlight = async (req, res) => {
   try {
     const flight = await flightService.addFlight(req);
@@ -86,6 +101,7 @@ const deleteFlight = async (req, res) => {
 module.exports = {
   getFlights,
   getFlight,
+  searchFlight,
   addFlight,
   updateFlight,
   deleteFlight

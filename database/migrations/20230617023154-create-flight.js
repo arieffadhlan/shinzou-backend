@@ -50,7 +50,16 @@ module.exports = {
       },
       class: {
         allowNull: false,
+<<<<<<< HEAD
         type: Sequelize.STRING
+=======
+        type: Sequelize.ENUM([
+          "Economy", 
+          "Preminum Economy",
+          "Business",
+          "First Class"
+        ])
+>>>>>>> 25a89db04fed65b9a6832207b98bcf9edb36e638
       },
       price: {
         allowNull: false,

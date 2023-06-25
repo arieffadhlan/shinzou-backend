@@ -56,7 +56,16 @@ module.exports = (sequelize, DataTypes) => {
     arrival_datetime: DataTypes.DATE,
     capacity: DataTypes.INTEGER,
     description: DataTypes.TEXT,
+<<<<<<< HEAD
     class: DataTypes.STRING,
+=======
+    class: DataTypes.ENUM([
+      "Economy", 
+      "Preminum Economy",
+      "Business",
+      "First Class"
+    ]),
+>>>>>>> 25a89db04fed65b9a6832207b98bcf9edb36e638
     price: DataTypes.INTEGER
   }, {
     sequelize,
