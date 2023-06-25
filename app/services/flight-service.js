@@ -47,7 +47,7 @@ const searchFlight = async (req) => {
       location_to, 
       departure_date, 
       return_date,
-      passangers, 
+      passengers, 
       seat_class 
     } = req.query
 
@@ -60,7 +60,7 @@ const searchFlight = async (req) => {
         origin_airport_id: originAirport.id,
         destination_airport_id: destinationAirport.id,
         departure_date,
-        capacity: parseInt(passangers),
+        capacity: parseInt(passengers),
         class: seat_class
       });
       return flights;
@@ -70,7 +70,7 @@ const searchFlight = async (req) => {
         origin_airport_id: originAirport.id,
         destination_airport_id: destinationAirport.id,
         departure_date,
-        capacity: parseInt(passangers),
+        capacity: parseInt(passengers),
         class: seat_class
       });
 
@@ -78,7 +78,7 @@ const searchFlight = async (req) => {
         origin_airport_id: destinationAirport.id,
         destination_airport_id: originAirport.id,
         departure_date: return_date,
-        capacity: parseInt(passangers),
+        capacity: parseInt(passengers),
       });
 
       return {

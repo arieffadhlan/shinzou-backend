@@ -7,7 +7,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "flight_id",
         as: "flight"
       });
-      this.belongsTo(models.Passanger, { as: "passanger" });
+      this.belongsTo(models.Passenger, { 
+        foreignKey: "passenger_id",
+        as: "passenger"
+      });
     }
   }
   Seat.init({
@@ -21,6 +24,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       references: {
         model: "Flight",
+        key: "id"
+      }
+    },
+    passenger_id: {
+      type: DataTypes.UUID,
+      references: {
+        model: "Passenger",
         key: "id"
       }
     },

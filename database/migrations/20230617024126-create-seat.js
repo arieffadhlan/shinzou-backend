@@ -17,6 +17,14 @@ module.exports = {
           key: "id"
         }
       },
+      passenger_id: {
+        allowNull: false,
+        type: Sequelize.UUID,
+        references: {
+          model: "Passengers",
+          key: "id"
+        }
+      },
       seat_number: {
         allowNull: false,
         type: Sequelize.STRING

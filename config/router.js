@@ -39,4 +39,11 @@ router.post("/api/v1/flight", middlewares.authorize, controllers.flightControlle
 router.put("/api/v1/flight/:id", middlewares.authorize, controllers.flightController.updateFlight);
 router.delete("/api/v1/flight/:id", middlewares.authorize, controllers.flightController.deleteFlight);
 
+// Transaction
+router.post("/api/v1/checkout", middlewares.authorize, controllers.transactionController.addTransaction);
+// router.get("/api/v1/checkout/:id", middlewares.authorize, controllers.transactionController.getTransaction);
+// router.post("/api/v1/checkout", middlewares.authorize, controllers.transactionController.addTransaction);
+// router.put("/api/v1/checkout/:id", middlewares.authorize, controllers.transactionController.updateTransaction);
+// router.delete("/api/v1/checkout/:id", middlewares.authorize, controllers.transactionController.deleteTransaction);
+
 module.exports = router;
