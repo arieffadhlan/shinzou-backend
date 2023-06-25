@@ -40,6 +40,31 @@ const getFlight = async (id) => {
   }
 }
 
+const searchFlight = async (req) => {
+  try {
+    const { location_from, location_to, departure_datetime, passangers, seat_class } = req.query
+
+    const originAirport = await airportRepository.getAirportByName(location_from);
+    const destinationAirport = await airportRepository.getAirportByName(location_to);
+    
+    const flights = await flightRepository.searchFlight({
+      location_from: originAirport.id,
+      location_to: destinationAirport.id,
+      departure_datetime: new Date(departure_datetime),
+      passangers: parseInt(passangers),
+      seat_class
+    });
+
+    return flights;
+  } catch (error) {
+    if (error instanceof ApplicationError) {
+      throw new ApplicationError(error.statusCode, error.message);
+    } else {
+      throw new Error(error.message);
+    }
+  }
+}
+
 const addFlight = async (req) => {
   try {
     if (checkRequiredValue(req.body)) {
@@ -126,6 +151,7 @@ const deleteFlight = async (id) => {
 module.exports = {
   getFlights,
   getFlight,
+  searchFlight,
   addFlight,
   updateFlight,
   deleteFlight
