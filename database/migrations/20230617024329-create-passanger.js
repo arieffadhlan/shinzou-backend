@@ -26,11 +26,7 @@ module.exports = {
       },
       title: {
         allowNull: false,
-<<<<<<< HEAD
         type: Sequelize.STRING
-=======
-        type: Sequelize.ENUM(["Mr", "Miss"])
->>>>>>> 25a89db04fed65b9a6832207b98bcf9edb36e638
       },
       name: {
         allowNull: false,
