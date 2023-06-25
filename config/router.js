@@ -3,6 +3,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('../docs/openapi.json');
 const controllers =  require("../app/controllers");
 const middlewares = require("../app/middlewares");
+const { checkTicket, checkTicketQuery } = require("../app/middlewares/ticketMiddleware");
 
 const router = express.Router();
 
