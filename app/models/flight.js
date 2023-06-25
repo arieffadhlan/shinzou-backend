@@ -52,7 +52,9 @@ module.exports = (sequelize, DataTypes) => {
         key: "id"
       }
     },
+    departure_date: DataTypes.DATEONLY,
     departure_datetime: DataTypes.DATE,
+    arrival_date: DataTypes.DATEONLY,
     arrival_datetime: DataTypes.DATE,
     capacity: DataTypes.INTEGER,
     description: DataTypes.TEXT,

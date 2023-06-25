@@ -42,13 +42,10 @@ const getFlight = (id) => {
 const searchFlight = (data) => {
   return Flight.findAll({
     where: {
-      origin_airport_id: data.location_from,
-      destination_airport_id: data.location_to,
-      departure_datetime: data.departure_datetime,
+      ...data,
       capacity: {
-        [Op.gte]: data.passangers, 
+        [Op.gte]: data.capacity, 
       },
-      class: data.seat_class
     },
     include: [
       {

@@ -32,6 +32,7 @@ router.put("/api/v1/airline/:id", middlewares.authorize, controllers.airlineCont
 router.delete("/api/v1/airline/:id", middlewares.authorize, controllers.airlineController.deleteAirline);
 
 // Flight
+router.get("/api/v1/search-flight", middlewares.authorize, controllers.flightController.searchFlight);
 router.get("/api/v1/flight", middlewares.authorize, controllers.flightController.getFlights);
 router.get("/api/v1/flight/:id", middlewares.authorize, controllers.flightController.getFlight);
 router.post("/api/v1/flight", middlewares.authorize, controllers.flightController.addFlight);
