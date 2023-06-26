@@ -18,6 +18,12 @@ const updateTransaction = (id, data) => {
   });
 }
 
+const updateTransactionByBookingCode = (booking_code, data) => {
+  return Transaction.update(data, 
+    { where: { booking_code } 
+  });
+}
+
 const deleteTransaction = (id) => {
   return Transaction.destroy({ where: { id } });
 }
@@ -27,5 +33,6 @@ module.exports = {
   getTransaction,
   addTransaction,
   updateTransaction,
+  updateTransactionByBookingCode,
   deleteTransaction
 }
