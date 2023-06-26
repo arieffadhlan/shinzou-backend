@@ -8,6 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.UUID
       },
+      user_id: {
+        allowNull: false,
+        type: Sequelize.UUID,
+        references: {
+          model: "Users",
+          key: "id"
+        }
+      },
       flight_id: {
         allowNull: false,
         type: Sequelize.UUID,
@@ -16,11 +24,11 @@ module.exports = {
           key: "id"
         }
       },
-      user_id: {
+      passenger_id: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
-          model: "Users",
+          model: "Passengers",
           key: "id"
         }
       },
@@ -30,7 +38,7 @@ module.exports = {
       },
       ammount: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       payment_method: {
         allowNull: true,

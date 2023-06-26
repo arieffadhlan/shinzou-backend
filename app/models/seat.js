@@ -3,11 +3,14 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Seat extends Model {
     static associate(models) {
-      this.hasMany(models.Flight, {
+      this.belongsTo(models.Flight, {
         foreignKey: "flight_id",
-        as: "flights"
+        as: "flight"
       });
-      this.belongsTo(models.Passanger, { as: "passanger" });
+      this.belongsTo(models.Passenger, { 
+        foreignKey: "passenger_id",
+        as: "passenger"
+      });
     }
   }
   Seat.init({
@@ -21,6 +24,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       references: {
         model: "Flight",
+        key: "id"
+      }
+    },
+    passenger_id: {
+      type: DataTypes.UUID,
+      references: {
+        model: "Passenger",
         key: "id"
       }
     },

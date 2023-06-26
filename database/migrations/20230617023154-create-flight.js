@@ -32,9 +32,17 @@ module.exports = {
           key: "id"
         }
       },
+      departure_date: {
+        allowNull: false,
+        type: Sequelize.DATEONLY
+      },
       departure_datetime: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      arrival_date: {
+        allowNull: false,
+        type: Sequelize.DATEONLY
       },
       arrival_datetime: {
         allowNull: false,
@@ -50,12 +58,7 @@ module.exports = {
       },
       class: {
         allowNull: false,
-        type: Sequelize.ENUM([
-          "Economy", 
-          "Preminum Economy",
-          "Business",
-          "First Class"
-        ])
+        type: Sequelize.STRING
       },
       price: {
         allowNull: false,

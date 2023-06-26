@@ -2,31 +2,15 @@
 /** @type {import("sequelize-cli").Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Passangers", {
+    await queryInterface.createTable("Passengers", {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID
       },
-      transaction_id: {
-        allowNull: false,
-        type: Sequelize.UUID,
-        references: {
-          model: "Transactions",
-          key: "id"
-        }
-      },
-      seat_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: "Seats",
-          key: "id"
-        }
-      },
       title: {
         allowNull: false,
-        type: Sequelize.ENUM(["Mr", "Miss"])
+        type: Sequelize.STRING
       },
       name: {
         allowNull: false,
@@ -51,6 +35,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Passangers");
+    await queryInterface.dropTable("Passengers");
   }
 };

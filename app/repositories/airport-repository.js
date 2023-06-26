@@ -8,6 +8,14 @@ const getAirport = (id) => {
   return Airport.findByPk(id);
 }
 
+const getAirportByName = (name) => {
+  return Airport.findOne({ 
+    where: {
+      location: name
+    } 
+  });
+}
+
 const addAirport = (data) => {
   return Airport.create(data);
 }
@@ -25,6 +33,7 @@ const deleteAirport = (id) => {
 module.exports = {
   getAirports,
   getAirport,
+  getAirportByName,
   addAirport,
   updateAirport,
   deleteAirport
