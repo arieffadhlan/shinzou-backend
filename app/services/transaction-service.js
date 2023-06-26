@@ -2,10 +2,11 @@ const mailService = require("./mail-service");
 const passengerRepository = require("../repositories/passenger-repository");
 const seatRepository = require("../repositories/seat-repository");
 const transactionRepository = require("../repositories/transaction-repository");
+const ticketRepository = require("../repositories/ticket-repository");
 const ApplicationError = require("../errors/ApplicationError");
 
 const generateBookingCode = () => {
-  const char = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  const char = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   let bookingCode = "";
   for (let i = 0; i < 9; i++) {
     bookingCode += char[(Math.floor(Math.random() * char.length))];
@@ -13,11 +14,44 @@ const generateBookingCode = () => {
   return bookingCode;
 }
 
+const getTransactions = async () => {
+  try {
+    const transactions = await transactionRepository.getTransactions();
+    return transactions;
+  } catch (error) {
+    if (error instanceof ApplicationError) {
+      throw new ApplicationError(error.statusCode, error.message);
+    } else {
+      throw new Error(error.message);
+    }
+  }
+}
+
+const getTransaction = async (id) => {
+  try {
+    const transaction = await transactionRepository.getTransaction(id);
+    return transaction;
+  } catch (error) {
+    if (error instanceof ApplicationError) {
+      throw new ApplicationError(error.statusCode, error.message);
+    } else {
+      throw new Error(error.message);
+    }
+  }
+}
+
 const addTransaction = async (req) => {
   try {
     const { flight_id, passengers, ammount } = req.body;
     const { id, email, name } = req.user;
     const booking_code = generateBookingCode();
+
+    const transaction = await transactionRepository.addTransaction({
+      flight_id,
+      user_id: id,
+      booking_code,
+      ammount
+    });
 
     passengers.map(async (passengerData) => {
       const passenger = await passengerRepository.addPassenger({
@@ -27,18 +61,15 @@ const addTransaction = async (req) => {
         phone_number: passengerData.phone_number
       });
   
-      await seatRepository.addSeat({
+      const seat = await seatRepository.addSeat({
         flight_id,
-        passenger_id: passenger.id,
         seat_number: passengerData.seat_number
       });
 
-      await transactionRepository.addTransaction({
-        user_id: id,
-        flight_id,
+      await ticketRepository.addTicket({
+        transaction_id: transaction.id,
         passenger_id: passenger.id,
-        booking_code,
-        ammount
+        seat_id: seat.id,
       });
     });
 
@@ -111,6 +142,8 @@ const addPayment = async (req) => {
 }
 
 module.exports = {
+  getTransactions,
+  getTransaction,
   addTransaction,
   addPayment
 }

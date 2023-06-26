@@ -7,9 +7,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "flight_id",
         as: "flight"
       });
-      this.belongsTo(models.Passenger, { 
-        foreignKey: "passenger_id",
-        as: "passenger"
+      this.hasMany(models.Ticket, {
+        foreignKey: "seat_id",
+        as: "tickets"
       });
     }
   }
@@ -24,13 +24,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       references: {
         model: "Flight",
-        key: "id"
-      }
-    },
-    passenger_id: {
-      type: DataTypes.UUID,
-      references: {
-        model: "Passenger",
         key: "id"
       }
     },

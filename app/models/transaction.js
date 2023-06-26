@@ -4,17 +4,17 @@ const { v4: uuidv4 } = require("uuid");
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
     static associate(models) {
-      this.belongsTo(models.User, {
-        foreignKey: "user_id",
-        as: "user"
-      });
       this.belongsTo(models.Flight, {
         foreignKey: "flight_id",
         as: "flight"
       });
-      this.belongsTo(models.Passenger, {
-        foreignKey: "passenger_id",
-        as: "passenger"
+      this.belongsTo(models.User, {
+        foreignKey: "user_id",
+        as: "user"
+      });
+      this.hasMany(models.Ticket, {
+        foreignKey: "transaction_id",
+        as: "tickets"
       });
     }
   }
@@ -25,13 +25,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     },
-    user_id: {
-      type: DataTypes.UUID,
-      references: {
-        model: "User",
-        key: "id"
-      }
-    },
     flight_id: {
       type: DataTypes.UUID,
       references: {
@@ -39,10 +32,10 @@ module.exports = (sequelize, DataTypes) => {
         key: "id"
       }
     },
-    passenger_id: {
+    user_id: {
       type: DataTypes.UUID,
       references: {
-        model: "Passenger",
+        model: "User",
         key: "id"
       }
     },

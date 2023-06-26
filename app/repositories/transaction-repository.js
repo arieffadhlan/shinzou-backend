@@ -1,11 +1,61 @@
-const { Transaction } = require("../models");
+const { Flight, Passenger, Seat, Transaction, Ticket, User } = require("../models");
 
 const getTransactions = () => {
-  return Transaction.findAll();
+  return Transaction.findAll({
+    include: [
+      {
+        model: User,
+        as: "user"
+      },
+      {
+        model: Flight,
+        as: "flight"
+      },
+      {
+        model: Ticket,
+        as: "tickets",
+        include: [
+          {
+            model: Passenger,
+            as: "passenger"
+          },
+          {
+            model: Seat,
+            as: "seat"
+          },
+        ]
+      }
+    ]
+  });
 }
 
 const getTransaction = (id) => {
-  return Transaction.findByPk(id);
+  return Transaction.findByPk(id, {
+    include: [
+      {
+        model: User,
+        as: "user"
+      },
+      {
+        model: Flight,
+        as: "flight"
+      },
+      {
+        model: Ticket,
+        as: "tickets",
+        include: [
+          {
+            model: Passenger,
+            as: "passenger"
+          },
+          {
+            model: Seat,
+            as: "seat"
+          },
+        ]
+      }
+    ]
+  });
 }
 
 const addTransaction = (data) => {

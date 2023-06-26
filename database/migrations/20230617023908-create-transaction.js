@@ -2,12 +2,11 @@
 /** @type {import("sequelize-cli").Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Seats", {
+    await queryInterface.createTable("Transactions", {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID
       },
       flight_id: {
         allowNull: false,
@@ -17,16 +16,24 @@ module.exports = {
           key: "id"
         }
       },
-      passenger_id: {
+      user_id: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
-          model: "Passengers",
+          model: "Users",
           key: "id"
         }
       },
-      seat_number: {
+      booking_code: {
         allowNull: false,
+        type: Sequelize.CHAR(9)
+      },
+      ammount: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
+      payment_method: {
+        allowNull: true,
         type: Sequelize.STRING
       },
       createdAt: {
@@ -40,6 +47,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Seats");
+    await queryInterface.dropTable("Transactions");
   }
 };

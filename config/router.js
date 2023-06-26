@@ -40,7 +40,12 @@ router.put("/api/v1/flight/:id", middlewares.authorize, controllers.flightContro
 router.delete("/api/v1/flight/:id", middlewares.authorize, controllers.flightController.deleteFlight);
 
 // Transaction
-router.post("/api/v1/checkout", middlewares.authorize, controllers.transactionController.addTransaction);
-router.put("/api/v1/payment/:booking_code", middlewares.authorize, controllers.transactionController.addPayment);
+// Order History
+router.get("/api/v1/transaction", middlewares.authorize, controllers.transactionController.getTransactions);
+router.get("/api/v1/transaction/:id", middlewares.authorize, controllers.transactionController.getTransaction);
+// Checkout
+router.post("/api/v1/transaction", middlewares.authorize, controllers.transactionController.addTransaction);
+// Payment
+router.put("/api/v1/transaction/:booking_code", middlewares.authorize, controllers.transactionController.addPayment);
 
 module.exports = router;
