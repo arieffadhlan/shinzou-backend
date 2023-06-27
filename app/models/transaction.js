@@ -5,8 +5,12 @@ module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
     static associate(models) {
       this.belongsTo(models.Flight, {
-        foreignKey: "flight_id",
-        as: "flight"
+        foreignKey: "departure_flight_id",
+        as: "departureFlight"
+      });
+      this.belongsTo(models.Flight, {
+        foreignKey: "return_flight_id",
+        as: "returnFlight"
       });
       this.belongsTo(models.User, {
         foreignKey: "user_id",
@@ -25,7 +29,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     },
-    flight_id: {
+    departure_flight_id: {
+      type: DataTypes.UUID,
+      references: {
+        model: "Flight",
+        key: "id"
+      }
+    },
+    return_flight_id: {
       type: DataTypes.UUID,
       references: {
         model: "Flight",

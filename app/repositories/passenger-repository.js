@@ -8,6 +8,12 @@ const getPassenger = (id) => {
   return Passenger.findByPk(id);
 }
 
+const getPassengerByIdentityNumber = (identity_number) => {
+  return Passenger.findOne({
+    where: { identity_number }
+  });
+}
+
 const addPassenger = (data) => {
   return Passenger.create(data);
 }
@@ -25,6 +31,7 @@ const deletePassenger = (id) => {
 module.exports = {
   getPassengers,
   getPassenger,
+  getPassengerByIdentityNumber,
   addPassenger,
   updatePassenger,
   deletePassenger

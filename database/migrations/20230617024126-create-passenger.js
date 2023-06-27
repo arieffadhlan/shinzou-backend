@@ -20,6 +20,11 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
+      identity_number: {
+        allowNull: false,
+        unique: true,
+        type: Sequelize.STRING
+      },
       phone_number: {
         allowNull: false,
         type: Sequelize.STRING

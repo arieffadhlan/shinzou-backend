@@ -8,7 +8,15 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.UUID
       },
-      flight_id: {
+      departure_flight_id: {
+        allowNull: false,
+        type: Sequelize.UUID,
+        references: {
+          model: "Flights",
+          key: "id"
+        }
+      },
+      return_flight_id: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {

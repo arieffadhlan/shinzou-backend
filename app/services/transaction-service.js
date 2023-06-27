@@ -5,18 +5,21 @@ const transactionRepository = require("../repositories/transaction-repository");
 const ticketRepository = require("../repositories/ticket-repository");
 const ApplicationError = require("../errors/ApplicationError");
 
-const generateBookingCode = () => {
+const generateBookingCode = (length) => {
   const char = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   let bookingCode = "";
-  for (let i = 0; i < 9; i++) {
+
+  for (let i = 0; i < length; i++) {
     bookingCode += char[(Math.floor(Math.random() * char.length))];
   }
+
   return bookingCode;
 }
 
 const getTransactions = async () => {
   try {
     const transactions = await transactionRepository.getTransactions();
+
     return transactions;
   } catch (error) {
     if (error instanceof ApplicationError) {
@@ -30,6 +33,7 @@ const getTransactions = async () => {
 const getTransaction = async (id) => {
   try {
     const transaction = await transactionRepository.getTransaction(id);
+
     return transaction;
   } catch (error) {
     if (error instanceof ApplicationError) {
@@ -40,38 +44,63 @@ const getTransaction = async (id) => {
   }
 }
 
+const saveTransactionData = async (data) => {
+  const { flight_id, transaction_id, passengers } = data;
+
+  await Promise.all(passengers.map(async (item) => {
+    let passenger = await passengerRepository.getPassengerByIdentityNumber(item.identity_number);
+    
+    if (!passenger) {
+      passenger = await passengerRepository.addPassenger({
+        title: item.title,
+        name: item.name,
+        identity_number: item.identity_number,
+        family_name: item.family_name ? item.family_name : null,
+        phone_number: item.phone_number
+      });
+    }
+
+    const seat = await seatRepository.addSeat({
+      flight_id,
+      seat_number: item.seat_number
+    });
+
+    await ticketRepository.addTicket({
+      transaction_id,
+      passenger_id: passenger.id,
+      seat_id: seat.id,
+    });
+  }));
+}
+
 const addTransaction = async (req) => {
   try {
-    const { flight_id, passengers, ammount } = req.body;
+    const { departure_flight_id, return_flight_id, passengers, ammount } = req.body;
     const { id, email, name } = req.user;
-    const booking_code = generateBookingCode();
+    const booking_code = generateBookingCode(9);
 
+    // Save ticket transaction
     const transaction = await transactionRepository.addTransaction({
-      flight_id,
+      departure_flight_id,
+      return_flight_id,
       user_id: id,
       booking_code,
       ammount
     });
 
-    passengers.map(async (passengerData) => {
-      const passenger = await passengerRepository.addPassenger({
-        title: passengerData.title,
-        name: passengerData.name,
-        family_name: passengerData.family_name ? passengerData.family_name : null,
-        phone_number: passengerData.phone_number
-      });
-  
-      const seat = await seatRepository.addSeat({
-        flight_id,
-        seat_number: passengerData.seat_number
-      });
-
-      await ticketRepository.addTicket({
-        transaction_id: transaction.id,
-        passenger_id: passenger.id,
-        seat_id: seat.id,
-      });
+    await saveTransactionData({
+      flight_id: departure_flight_id,
+      transaction_id: transaction.id,
+      passengers
     });
+
+    if (return_flight_id) {
+      await saveTransactionData({
+        flight_id: return_flight_id,
+        transaction_id: transaction.id,
+        passengers
+      });
+    }
 
     // Send payment confirmation to email
     return await mailService.sendMail(email, "Konfirmasi Pembayaran",
