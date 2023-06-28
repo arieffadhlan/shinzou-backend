@@ -45,8 +45,7 @@ const searchFlight = async (req) => {
     const { 
       location_from, 
       location_to, 
-      departure_date, 
-      return_date,
+      departure_date,
       passengers, 
       seat_class 
     } = req.query
@@ -54,38 +53,15 @@ const searchFlight = async (req) => {
     const originAirport = await airportRepository.getAirportByName(location_from);
     const destinationAirport = await airportRepository.getAirportByName(location_to);
     
-    if (!return_date) {
-      // One way
-      const flights = await flightRepository.searchFlight({
-        origin_airport_id: originAirport.id,
-        destination_airport_id: destinationAirport.id,
-        departure_date,
-        capacity: parseInt(passengers),
-        class: seat_class
-      });
-      return flights;
-    } else {
-      // Round trip
-      const departureFlights = await flightRepository.searchFlight({
-        origin_airport_id: originAirport.id,
-        destination_airport_id: destinationAirport.id,
-        departure_date,
-        capacity: parseInt(passengers),
-        class: seat_class
-      });
+    const flights = await flightRepository.searchFlight({
+      origin_airport_id: originAirport.id,
+      destination_airport_id: destinationAirport.id,
+      departure_date,
+      capacity: parseInt(passengers),
+      class: seat_class
+    });
 
-      const returnFlights = await flightRepository.searchFlight({
-        origin_airport_id: destinationAirport.id,
-        destination_airport_id: originAirport.id,
-        departure_date: return_date,
-        capacity: parseInt(passengers),
-      });
-
-      return {
-        departureFlights,
-        returnFlights
-      }
-    }
+    return flights;
   } catch (error) {
     if (error instanceof ApplicationError) {
       throw new ApplicationError(error.statusCode, error.message);

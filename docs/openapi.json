@@ -2330,6 +2330,308 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "add transaction data.",
+        "description": "Add new airports data to database",
+        "requestBody": {
+          "description": "Required fields (all fields)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Transaction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "15aebc87-df74-4742-9f56-3b3ca38d061e"
+                          },
+                          "departure_flight_id": {
+                            "type": "string",
+                            "example": "9d65afbb-3356-4037-b3ed-8794430f9a89"
+                          },
+                          "return_flight_id": {
+                            "type": "string",
+                            "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                          },
+                          "user_id": {
+                            "type": "string",
+                            "example": "1eabb95b-3080-4320-a633-016beee9e8af"
+                          },
+                          "booking_code": {
+                            "type": "string",
+                            "example": "1eabb95b-3080-4320-a633-016beee9e8af"
+                          },
+                          "amount": {
+                            "type": "integer",
+                            "example": 1500000
+                          },
+                          "payment_method": {
+                            "type": "string",
+                            "example": null
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2023-06-21T02:13:55.014Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2023-06-21T02:13:55.014Z"
+                          },
+                          "departureFlight": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "9d65afbb-3356-4037-b3ed-8794430f9a89"
+                              },
+                              "origin_airport_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "destination_airport_id": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "airline_id": {
+                                "type": "integer",
+                                "example": 4
+                              },
+                              "flight_number": {
+                                "type": "string",
+                                "example": "JT-139"
+                              },
+                              "departure_date": {
+                                "type": "string",
+                                "example": "2023-10-11"
+                              },
+                              "departure_time": {
+                                "type": "string",
+                                "example": "11:59:08.088"
+                              },
+                              "arrival_date": {
+                                "type": "string",
+                                "example": "2023-10-11"
+                              },
+                              "arrival_time": {
+                                "type": "string",
+                                "example": "12:59:08.088"
+                              },
+                              "capacity": {
+                                "type": "integer",
+                                "example": 72
+                              },
+                              "description": {
+                                "type": "string",
+                                "example": "In Flight Entertainment"
+                              },
+                              "class": {
+                                "type": "string",
+                                "example": "Premium Economy"
+                              },
+                              "price": {
+                                "type": "integer",
+                                "example": 550000
+                              }
+                            }
+                          },
+                          "returnFlight": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                              },
+                              "origin_airport_id": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "destination_airport_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "airline_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "flight_number": {
+                                "type": "string",
+                                "example": "ID-770"
+                              },
+                              "departure_date": {
+                                "type": "string",
+                                "example": "2023-11-20"
+                              },
+                              "departure_time": {
+                                "type": "string",
+                                "example": "09:45:57.5757"
+                              },
+                              "arrival_date": {
+                                "type": "string",
+                                "example": "2023-11-20"
+                              },
+                              "arrival_time": {
+                                "type": "string",
+                                "example": "13:45:57.5757"
+                              },
+                              "capacity": {
+                                "type": "integer",
+                                "example": 72
+                              },
+                              "description": {
+                                "type": "string",
+                                "example": "In Flight Entertainment"
+                              },
+                              "class": {
+                                "type": "string",
+                                "example": "Premium Economy"
+                              },
+                              "price": {
+                                "type": "integer",
+                                "example": 600000
+                              }
+                            }
+                          },
+                          "user": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "example": "Shinzou"
+                              }
+                            }
+                          },
+                          "tickets": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "0870abfb-5220-45c7-86b5-8554221c8db7"
+                              },
+                              "transaction_id": {
+                                "type": "string",
+                                "example": "15aebc87-df74-4742-9f56-3b3ca38d061e"
+                              },
+                              "passenger_id": {
+                                "type": "string",
+                                "example": "e783f1f7-b3db-44aa-9ab1-07992ec6b06a"
+                              },
+                              "seat_id": {
+                                "type": "string",
+                                "example": 20
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "example": "2023-06-21T02:13:55.014Z"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "example": "2023-06-21T02:13:55.014Z"
+                              },
+                              "passenger": {
+                                "type": "object",
+                                "properties": {
+                                  "title": {
+                                    "type": "string",
+                                    "example": "Mr"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "example": "Renaldy"
+                                  },
+                                  "family_name": {
+                                    "type": "string",
+                                    "example": null
+                                  },
+                                  "identity_number": {
+                                    "type": "integer",
+                                    "example": 123456789
+                                  },
+                                  "phone_number": {
+                                    "type": "integer",
+                                    "example": 98129031
+                                  },
+                                  "seat": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": 20
+                                      },
+                                      "flight_id": {
+                                        "type": "string",
+                                        "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                                      },
+                                      "seat_number": {
+                                        "type": "string",
+                                        "example": "A2"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/transaction/{id}": {
@@ -2625,6 +2927,319 @@
                     "message": {
                       "type": "string",
                       "example": "error.message"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "Edit transaction data by id.",
+        "description": "Modify transaction data by id.",
+        "requestBody": {
+          "description": "Allowed fields to update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditTransaction"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the transactions to edit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "15aebc87-df74-4742-9f56-3b3ca38d061e"
+                          },
+                          "departure_flight_id": {
+                            "type": "string",
+                            "example": "9d65afbb-3356-4037-b3ed-8794430f9a89"
+                          },
+                          "return_flight_id": {
+                            "type": "string",
+                            "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                          },
+                          "user_id": {
+                            "type": "string",
+                            "example": "1eabb95b-3080-4320-a633-016beee9e8af"
+                          },
+                          "booking_code": {
+                            "type": "string",
+                            "example": "1eabb95b-3080-4320-a633-016beee9e8af"
+                          },
+                          "amount": {
+                            "type": "integer",
+                            "example": 1500000
+                          },
+                          "payment_method": {
+                            "type": "string",
+                            "example": null
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2023-06-21T02:13:55.014Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2023-06-21T02:13:55.014Z"
+                          },
+                          "departureFlight": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "9d65afbb-3356-4037-b3ed-8794430f9a89"
+                              },
+                              "origin_airport_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "destination_airport_id": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "airline_id": {
+                                "type": "integer",
+                                "example": 4
+                              },
+                              "flight_number": {
+                                "type": "string",
+                                "example": "JT-139"
+                              },
+                              "departure_date": {
+                                "type": "string",
+                                "example": "2023-10-11"
+                              },
+                              "departure_time": {
+                                "type": "string",
+                                "example": "11:59:08.088"
+                              },
+                              "arrival_date": {
+                                "type": "string",
+                                "example": "2023-10-11"
+                              },
+                              "arrival_time": {
+                                "type": "string",
+                                "example": "12:59:08.088"
+                              },
+                              "capacity": {
+                                "type": "integer",
+                                "example": 72
+                              },
+                              "description": {
+                                "type": "string",
+                                "example": "In Flight Entertainment"
+                              },
+                              "class": {
+                                "type": "string",
+                                "example": "Premium Economy"
+                              },
+                              "price": {
+                                "type": "integer",
+                                "example": 550000
+                              }
+                            }
+                          },
+                          "returnFlight": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                              },
+                              "origin_airport_id": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "destination_airport_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "airline_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "flight_number": {
+                                "type": "string",
+                                "example": "ID-770"
+                              },
+                              "departure_date": {
+                                "type": "string",
+                                "example": "2023-11-20"
+                              },
+                              "departure_time": {
+                                "type": "string",
+                                "example": "09:45:57.5757"
+                              },
+                              "arrival_date": {
+                                "type": "string",
+                                "example": "2023-11-20"
+                              },
+                              "arrival_time": {
+                                "type": "string",
+                                "example": "13:45:57.5757"
+                              },
+                              "capacity": {
+                                "type": "integer",
+                                "example": 72
+                              },
+                              "description": {
+                                "type": "string",
+                                "example": "In Flight Entertainment"
+                              },
+                              "class": {
+                                "type": "string",
+                                "example": "Premium Economy"
+                              },
+                              "price": {
+                                "type": "integer",
+                                "example": 600000
+                              }
+                            }
+                          },
+                          "user": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "example": "Shinzou"
+                              }
+                            }
+                          },
+                          "tickets": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "0870abfb-5220-45c7-86b5-8554221c8db7"
+                              },
+                              "transaction_id": {
+                                "type": "string",
+                                "example": "15aebc87-df74-4742-9f56-3b3ca38d061e"
+                              },
+                              "passenger_id": {
+                                "type": "string",
+                                "example": "e783f1f7-b3db-44aa-9ab1-07992ec6b06a"
+                              },
+                              "seat_id": {
+                                "type": "string",
+                                "example": 20
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "example": "2023-06-21T02:13:55.014Z"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "example": "2023-06-21T02:13:55.014Z"
+                              },
+                              "passenger": {
+                                "type": "object",
+                                "properties": {
+                                  "title": {
+                                    "type": "string",
+                                    "example": "Mr"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "example": "John Krauffman"
+                                  },
+                                  "family_name": {
+                                    "type": "string",
+                                    "example": null
+                                  },
+                                  "identity_number": {
+                                    "type": "integer",
+                                    "example": 123456789
+                                  },
+                                  "phone_number": {
+                                    "type": "integer",
+                                    "example": 98129031
+                                  },
+                                  "seat": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": 20
+                                      },
+                                      "flight_id": {
+                                        "type": "string",
+                                        "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                                      },
+                                      "seat_number": {
+                                        "type": "string",
+                                        "example": "A2"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
                     }
                   }
                 }
@@ -3379,6 +3994,79 @@
           "name": {
             "type": "string",
             "example": "Renaldy"
+          },
+          "family_name": {
+            "type": "string",
+            "example": null
+          },
+          "identity_number": {
+            "type": "integer",
+            "example": 123456789
+          },
+          "phone_number": {
+            "type": "integer",
+            "example": 981290319
+          },
+          "seat": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": 20
+              },
+              "flight_id": {
+                "type": "string",
+                "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+              },
+              "seat_number": {
+                "type": "string",
+                "example": "A2"
+              }
+            }
+          }
+        }
+      },
+      "EditTransaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "0870abfb-5220-45c7-86b5-8554221c8db7"
+          },
+          "transaction_id": {
+            "type": "string",
+            "example": "15aebc87-df74-4742-9f56-3b3ca38d061e"
+          },
+          "passenger_id": {
+            "type": "string",
+            "example": "e783f1f7-b3db-44aa-9ab1-07992ec6b06a"
+          },
+          "seat_id": {
+            "type": "string",
+            "example": 20
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-06-21T02:13:55.014Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-06-21T02:13:55.014Z"
+          },
+          "passenger": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "example": "Mr"
+              }
+            }
+          },
+          "name": {
+            "type": "string",
+            "example": "John Krauffman"
           },
           "family_name": {
             "type": "string",

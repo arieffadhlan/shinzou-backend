@@ -18,23 +18,23 @@ router.post("/api/v1/forgot-password", controllers.authController.forgotPassword
 router.post("/api/v1/reset-password/:token", controllers.authController.resetPassword);
 
 // Airport
-router.get("/api/v1/airport", middlewares.authorize, controllers.airportController.getAirports);
-router.get("/api/v1/airport/:id", middlewares.authorize, controllers.airportController.getAirport);
+router.get("/api/v1/airport", controllers.airportController.getAirports);
+router.get("/api/v1/airport/:id", controllers.airportController.getAirport);
 router.post("/api/v1/airport", middlewares.authorize, controllers.airportController.addAirport);
 router.put("/api/v1/airport/:id", middlewares.authorize, controllers.airportController.updateAirport);
 router.delete("/api/v1/airport/:id", middlewares.authorize, controllers.airportController.deleteAirport);
 
 // Airline
-router.get("/api/v1/airline", middlewares.authorize, controllers.airlineController.getAirlines);
-router.get("/api/v1/airline/:id", middlewares.authorize, controllers.airlineController.getAirline);
+router.get("/api/v1/airline", controllers.airlineController.getAirlines);
+router.get("/api/v1/airline/:id", controllers.airlineController.getAirline);
 router.post("/api/v1/airline", middlewares.authorize, controllers.airlineController.addAirline);
 router.put("/api/v1/airline/:id", middlewares.authorize, controllers.airlineController.updateAirline);
 router.delete("/api/v1/airline/:id", middlewares.authorize, controllers.airlineController.deleteAirline);
 
 // Flight
-router.get("/api/v1/search-flight", middlewares.authorize, controllers.flightController.searchFlight);
-router.get("/api/v1/flight", middlewares.authorize, controllers.flightController.getFlights);
-router.get("/api/v1/flight/:id", middlewares.authorize, controllers.flightController.getFlight);
+router.get("/api/v1/search-flight", controllers.flightController.searchFlight);
+router.get("/api/v1/flight", controllers.flightController.getFlights);
+router.get("/api/v1/flight/:id", controllers.flightController.getFlight);
 router.post("/api/v1/flight", middlewares.authorize, controllers.flightController.addFlight);
 router.put("/api/v1/flight/:id", middlewares.authorize, controllers.flightController.updateFlight);
 router.delete("/api/v1/flight/:id", middlewares.authorize, controllers.flightController.deleteFlight);
@@ -47,5 +47,12 @@ router.get("/api/v1/transaction/:id", middlewares.authorize, controllers.transac
 router.post("/api/v1/transaction", middlewares.authorize, controllers.transactionController.addTransaction);
 // Payment
 router.put("/api/v1/transaction/:booking_code", middlewares.authorize, controllers.transactionController.addPayment);
+
+// Notification
+router.get("/api/v1/notification", middlewares.authorize, controllers.notificationController.getNotifications);
+// router.get("/api/v1/notification/:id", middlewares.authorize, controllers.notificationController.getNotification);
+// router.post("/api/v1/notification", middlewares.authorize, controllers.notificationController.addNotification);
+// router.put("/api/v1/notification/:id", middlewares.authorize, controllers.notificationController.updateNotification);
+// router.delete("/api/v1/notification/:id", middlewares.authorize, controllers.notificationController.deleteNotification);
 
 module.exports = router;
