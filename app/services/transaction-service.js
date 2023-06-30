@@ -1,4 +1,5 @@
 const mailService = require("./mail-service");
+const flightRepository = require("../repositories/flight-repository");
 const passengerRepository = require("../repositories/passenger-repository");
 const seatRepository = require("../repositories/seat-repository");
 const transactionRepository = require("../repositories/transaction-repository");
@@ -86,15 +87,29 @@ const addTransaction = async (req) => {
       user_id: id,
       booking_code,
       ammount
+    });    
+
+    // reduce the capacity based on the number of passengers
+    const departureFlight = await flightRepository.getFlight(departure_flight_id);
+    await flightRepository.updateFlight(departureFlight.id, {
+      capacity: departureFlight.capacity -= passengers.length
     });
 
+    // Save departure Ticket
     await saveTransactionData({
       flight_id: departure_flight_id,
       transaction_id: transaction.id,
       passengers
     });
-
+    
     if (return_flight_id) {
+      // reduce the capacity based on the number of passengers
+      const returnFlight = await flightRepository.getFlight(return_flight_id);
+      await flightRepository.updateFlight(returnFlight.id, {
+        capacity: returnFlight.capacity -= passengers.length
+      });
+      
+      // Save departure Ticket
       await saveTransactionData({
         flight_id: return_flight_id,
         transaction_id: transaction.id,

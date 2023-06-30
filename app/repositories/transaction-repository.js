@@ -17,6 +17,16 @@ const getTransactions = () => {
         attributes: {
           exclude: ["createdAt", "updatedAt"]
         },
+        include: [
+          {
+            model: Airport,
+            as: "originAirport"
+          },
+          {
+            model: Airport,
+            as: "destinationAirport"
+          },
+        ]
       },
       {
         model: Flight,
@@ -24,6 +34,16 @@ const getTransactions = () => {
         attributes: {
           exclude: ["createdAt", "updatedAt"]
         },
+        include: [
+          {
+            model: Airport,
+            as: "originAirport"
+          },
+          {
+            model: Airport,
+            as: "destinationAirport"
+          },
+        ]
       },
       {
         model: User,

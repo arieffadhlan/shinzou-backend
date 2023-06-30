@@ -68,6 +68,10 @@ const searchFlight = (data) => {
         model: Airline,
         as: "airline"
       },
+      {
+        model: Seat,
+        as: "seats"
+      },
     ]
   });
 }
