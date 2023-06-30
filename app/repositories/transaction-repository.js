@@ -1,11 +1,135 @@
-const { Transaction } = require("../models");
+const { 
+  Airport, 
+  Flight, 
+  Passenger, 
+  Seat, 
+  Transaction, 
+  Ticket, 
+  User 
+} = require("../models");
 
 const getTransactions = () => {
-  return Transaction.findAll();
+  return Transaction.findAll({
+    include: [
+      {
+        model: Flight,
+        as: "departureFlight",
+        attributes: {
+          exclude: ["createdAt", "updatedAt"]
+        },
+      },
+      {
+        model: Flight,
+        as: "returnFlight",
+        attributes: {
+          exclude: ["createdAt", "updatedAt"]
+        },
+      },
+      {
+        model: User,
+        as: "user",
+        attributes: ["name"]
+      },
+      {
+        model: Ticket,
+        as: "tickets",
+        include: [
+          {
+            model: Passenger,
+            as: "passenger",
+            attributes: {
+              exclude: ["id", "createdAt", "updatedAt"]
+            },
+          },
+          {
+            model: Seat,
+            as: "seat",
+            attributes: {
+              exclude: ["createdAt", "updatedAt"]
+            },
+          },
+        ]
+      }
+    ]
+  });
 }
 
 const getTransaction = (id) => {
-  return Transaction.findByPk(id);
+  return Transaction.findByPk(id, {
+    include: [
+      {
+        model: Flight,
+        as: "departureFlight",
+        attributes: {
+          exclude: ["createdAt", "updatedAt"]
+        },
+        include: [          
+          {
+            model: Airport,
+            as: "originAirport",
+            attributes: {
+              exclude: ["id", "createdAt", "updatedAt"]
+            },
+          },
+          {
+            model: Airport,
+            as: "destinationAirport",
+            attributes: {
+              exclude: ["id", "createdAt", "updatedAt"]
+            },
+          },
+        ]
+      },
+      {
+        model: Flight,
+        as: "returnFlight",
+        attributes: {
+          exclude: ["createdAt", "updatedAt"]
+        },
+        include: [          
+          {
+            model: Airport,
+            as: "originAirport",
+            attributes: {
+              exclude: ["id", "createdAt", "updatedAt"]
+            },
+          },
+          {
+            model: Airport,
+            as: "destinationAirport",
+            attributes: {
+              exclude: ["id", "createdAt", "updatedAt"]
+            },
+          },
+        ]
+      },
+      {
+        model: User,
+        as: "user",
+        attributes: ["name"]
+      },
+      {
+        model: Ticket,
+        as: "tickets",
+        include: [
+          {
+            model: Passenger,
+            as: "passenger",
+            attributes: {
+              exclude: ["id", "createdAt", "updatedAt"]
+            },
+          },
+          {
+            model: Seat,
+            as: "seat",
+            attributes: {
+              exclude: ["createdAt", "updatedAt"]
+            },
+          },
+        ]
+      }
+    ]
+  });
 }
 
 const addTransaction = (data) => {

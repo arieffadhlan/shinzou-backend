@@ -1,26 +1,18 @@
-"use strict";
-/** @type {import("sequelize-cli").Migration} */
+'use strict';
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Transactions", {
+    await queryInterface.createTable('Tickets', {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID
       },
-      user_id: {
+      transaction_id: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
-          model: "Users",
-          key: "id"
-        }
-      },
-      flight_id: {
-        allowNull: false,
-        type: Sequelize.UUID,
-        references: {
-          model: "Flights",
+          model: "Transactions",
           key: "id"
         }
       },
@@ -32,17 +24,13 @@ module.exports = {
           key: "id"
         }
       },
-      booking_code: {
+      seat_id: {
         allowNull: false,
-        type: Sequelize.CHAR(9)
-      },
-      ammount: {
-        allowNull: false,
-        type: Sequelize.INTEGER
-      },
-      payment_method: {
-        allowNull: true,
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Seats",
+          key: "id"
+        }
       },
       createdAt: {
         allowNull: false,
@@ -55,6 +43,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Transactions");
+    await queryInterface.dropTable('Tickets');
   }
 };

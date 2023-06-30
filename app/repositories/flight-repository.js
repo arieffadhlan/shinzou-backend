@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const { Airline, Airport, Flight } = require("../models");
+const { Airline, Airport, Flight, Seat } = require("../models");
 
 const getFlights = () => {
   return Flight.findAll({
@@ -15,6 +15,10 @@ const getFlights = () => {
       {
         model: Airline,
         as: "airline"
+      },
+      {
+        model: Seat,
+        as: "seats"
       },
     ]
   });
@@ -34,6 +38,10 @@ const getFlight = (id) => {
       {
         model: Airline,
         as: "airline"
+      },
+      {
+        model: Seat,
+        as: "seats"
       },
     ]
   });

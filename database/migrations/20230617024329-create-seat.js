@@ -2,25 +2,22 @@
 /** @type {import("sequelize-cli").Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Passengers", {
+    await queryInterface.createTable("Seats", {
       id: {
         allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.UUID
+        type: Sequelize.INTEGER
       },
-      title: {
+      flight_id: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.UUID,
+        references: {
+          model: "Flights",
+          key: "id"
+        }
       },
-      name: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      family_name: {
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      phone_number: {
+      seat_number: {
         allowNull: false,
         type: Sequelize.STRING
       },
@@ -35,6 +32,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Passengers");
+    await queryInterface.dropTable("Seats");
   }
 };
