@@ -17,7 +17,7 @@ module.exports = {
         }
       },
       return_flight_id: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.UUID,
         references: {
           model: "Flights",
