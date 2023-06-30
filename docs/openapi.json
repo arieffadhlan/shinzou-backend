@@ -1,0 +1,3928 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Shinzou API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://shinzou-api.up.railway.app/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "User authentication."
+    },
+    {
+      "name": "Airport",
+      "description": "airport data"
+    },
+    {
+      "name": "Airline",
+      "description": "airline data"
+    },
+    {
+      "name": "Flights",
+      "description": "Flight."
+    },
+    {
+      "name": "Transaction",
+      "description": "transaction data"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Register new user.",
+        "description": "Register new user account with member role.",
+        "requestBody": {
+          "description": "Required fields (name, email, phone_number, password)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterCredentials"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User account has been created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Tautan verifikasi telah dikirim."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "af0d4403-9ede-4009-a5a2-220b0597024b"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "John Doe"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "johndoe@gmail.com"
+                        },
+                        "phone_number": {
+                          "type": "string",
+                          "example": "08123456789"
+                        },
+                        "password": {
+                          "type": "string",
+                          "example": "$2a$10$HcB6rrcnFLrhOFdHvsGfXumJbn.AQVPeqfFlVtYoO5MNzHl0/ISVO"
+                        },
+                        "is_verified": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "role": {
+                          "type": "string",
+                          "example": "User"
+                        },
+                        "otp": {
+                          "type": "string",
+                          "example": "818096"
+                        },
+                        "token": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "da2b4450-d97a-4d9d-97cf-b657f15a0ea2"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2023-06-21T02:13:55.014Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2023-06-21T02:13:55.014Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error will appear if the email has been taken and there are fields that are not filled in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmailAlreadyTaken"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisterCredentialsRequired"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmailAlreadyTaken": {
+                    "summary": "Email already taken.",
+                    "value": {
+                      "status": "Error",
+                      "message": "Nama, email, nomor telepon, dan password wajib diisi."
+                    }
+                  },
+                  "RegisterCredentialsRequired": {
+                    "summary": "Check the data is valid and must be filled in.",
+                    "value": {
+                      "status": "Error",
+                      "message": "Email telah terdaftar."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/verify": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Verify OTP.",
+        "description": "Check the OTP code is valid or not.",
+        "requestBody": {
+          "description": "Required fields (otp)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "otp": {
+                    "type": "string",
+                    "example": "123456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The OTP code is valid and the account has been verified.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Registrasi telah berhasil."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorize, invalid OTP code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Maaf, Kode OTP Salah."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Login with user account.",
+        "description": "Login and get token for authorization.",
+        "requestBody": {
+          "description": "Required fields (email, password)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginCredentials"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Login has been successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Login telah berhasil."
+                    },
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFmMGQ0NDAzLTllZGUtNDAwOS1hNWEyLTIyMGIwNTk3MDI0YiIsIm5hbWUiOiJNdWhhbW1hZCBBcmllZiBGYWRobGFuIiwiZW1haWwiOiJhcmlmZmFkaGxhbjEyQGdtYWlsLmNvbSIsInBob25lX251bWJlciI6IjA4MTIzNDU2Nzg5IiwiaWF0IjoxNjg3MzE2MTAxLCJleHAiOjE2ODc0MDI1MDF9.m49pEKBz5f5d9eNLJ_hy5nQQR1yBkSKGWFFrKrq1q2I"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorize, invalid credentials.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Identitas tersebut tidak sesuai dengan data kami."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Check the data is valid and must be filled in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Email dan password wajib diisi."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/forgot-password": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Send password reset link to email.",
+        "description": "Send an email containing a link to the password reset page.",
+        "requestBody": {
+          "description": "Required fields (email)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "johndoe@gmail.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset link has been sent successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Tautan reset password berhasil terkirim."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Email not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Alamat email tidak ditemukan."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Check the data is valid and must be filled in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Email wajib diisi."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reset-password/{token}": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Reset account password.",
+        "description": "Reset account password and update old password with new password.",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "description": "Token of the user who wants to reset the password.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Required fields (password)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string",
+                    "example": "password_baru"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset link has been sent successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Reset password berhasil."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorize, token is not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Terjadi kesalahan, silakan coba lagi."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Check the data is valid and must be filled in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Password wajib diisi."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Airport": {
+      "get": {
+        "tags": [
+          "Airport"
+        ],
+        "summary": "Get airports data.",
+        "description": "Return airports data.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "airport_code": {
+                          "type": "string",
+                          "example": "BTJ"
+                        },
+                        "airport_name": {
+                          "type": "string",
+                          "example": "Sultan Iskandar Muda International"
+                        },
+                        "location": {
+                          "type": "string",
+                          "example": "Banda Aceh"
+                        },
+                        "location_acronym": {
+                          "type": "string",
+                          "example": "BNA"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2023-06-27T06:15:21.444Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2023-06-27T06:15:21.444Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Airport"
+        ],
+        "summary": "add airports data.",
+        "description": "Add new airports data to database",
+        "requestBody": {
+          "description": "Required fields (airport_code, airport_name, location, location_acronym)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AirportsData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Data bandara telah berhasil ditambahkan"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "airport_code": {
+                          "type": "string",
+                          "example": "BTJ"
+                        },
+                        "airport_name": {
+                          "type": "string",
+                          "example": "Sultan Iskandar Muda International"
+                        },
+                        "location": {
+                          "type": "string",
+                          "example": "Banda Aceh"
+                        },
+                        "location_acronym": {
+                          "type": "string",
+                          "example": "BNA"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2023-06-27T06:15:21.444Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2023-06-27T06:15:21.444Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Empty fields (airport_code, airport_name, location, location_acronym)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Empty Field",
+                    "value": {
+                      "status": "Error",
+                      "message": "kode, nama, dan lokasi bandara wajib diisi"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Airport/{id}": {
+      "get": {
+        "tags": [
+          "Airport"
+        ],
+        "summary": "Get airports data by id.",
+        "description": "Return airports data by id.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the airports to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "airport_code": {
+                          "type": "string",
+                          "example": "BTJ"
+                        },
+                        "airport_name": {
+                          "type": "string",
+                          "example": "Sultan Iskandar Muda International"
+                        },
+                        "location": {
+                          "type": "string",
+                          "example": "Banda Aceh"
+                        },
+                        "location_acronym": {
+                          "type": "string",
+                          "example": "BNA"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2023-06-27T06:15:21.444Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2023-06-27T06:15:21.444Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Airport"
+        ],
+        "summary": "Edit airports data by id.",
+        "description": "Modify airports data by id.",
+        "requestBody": {
+          "description": "Allowed fields to update (airport_code, airport_name, location, location_acronym)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AirportsDataEdit"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the airports to edit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Data bandara telah berhasil diperbarui"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Empty fields (airport_code, airport_name, location, location_acronym)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Empty Field",
+                    "value": {
+                      "status": "Error",
+                      "message": "kode, nama, dan lokasi bandara wajib diisi"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Airport"
+        ],
+        "summary": "Delete airports data by id.",
+        "description": "Delete airports data by id.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the airports to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Data bandara telah berhasil dihapus"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Airline": {
+      "get": {
+        "tags": [
+          "Airline"
+        ],
+        "summary": "Get airline data.",
+        "description": "Return airline data.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "airline_code": {
+                          "type": "string",
+                          "example": "ID"
+                        },
+                        "airline_name": {
+                          "type": "string",
+                          "example": "Batik Air"
+                        },
+                        "airline_image": {
+                          "type": "string",
+                          "example": "https://seeklogo.com/images/B/batik-air-logo-EDCC357AB3-seeklogo.com.png"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2023-06-27T06:15:21.458Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2023-06-27T06:15:21.458Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Airline"
+        ],
+        "summary": "add airline data.",
+        "description": "Add new airline data to database",
+        "requestBody": {
+          "description": "Required fields (airline_code, airline_name, airline_name)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AirlineData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Data pesawat telah berhasil ditambahkan"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "airline_code": {
+                          "type": "string",
+                          "example": "ID"
+                        },
+                        "airline_name": {
+                          "type": "string",
+                          "example": "Batik Air"
+                        },
+                        "airline_image": {
+                          "type": "string",
+                          "example": "https://seeklogo.com/images/B/batik-air-logo-EDCC357AB3-seeklogo.com.png"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2023-06-27T06:15:21.458Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2023-06-27T06:15:21.458Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Empty fields (airline_code, airline_name, airline_image)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Empty Field",
+                    "value": {
+                      "status": "Error",
+                      "message": "kode, nama, gambar pesawat wajib diisi"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Airline/{id}": {
+      "get": {
+        "tags": [
+          "Airline"
+        ],
+        "summary": "Get airline data by id.",
+        "description": "Return airline data by id.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the airline to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "airline_code": {
+                          "type": "string",
+                          "example": "ID"
+                        },
+                        "airline_name": {
+                          "type": "string",
+                          "example": "Batik Air"
+                        },
+                        "airline_image": {
+                          "type": "string",
+                          "example": "https://seeklogo.com/images/B/batik-air-logo-EDCC357AB3-seeklogo.com.png"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2023-06-27T06:15:21.458Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2023-06-27T06:15:21.458Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Airline"
+        ],
+        "summary": "Edit airline data by id.",
+        "description": "Modify airline data by id.",
+        "requestBody": {
+          "description": "Allowed fields to update (airline_code, airport_name, location, location_acronym)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AirlineDataEdit"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the airports to edit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Data pesawat telah berhasil diperbarui"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Empty fields (airline_code, airline_name, airline_image)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Empty Field",
+                    "value": {
+                      "status": "Error",
+                      "message": "kode, nama, gambar pesawat wajib diisi"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Airline"
+        ],
+        "summary": "Delete airline data by id.",
+        "description": "Delete airline data by id.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the airline to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Data pesawat telah berhasil dihapus"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/flight": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Get All Flight.",
+        "description": "Get All Flight",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Flights"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Check the data is valid and must be filled in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "error.message"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Add Flight.",
+        "description": "Add Flight",
+        "requestBody": {
+          "description": "Required fields (name, email, phone_number, password)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddFlightCredentials"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "messages": {
+                      "type": "string",
+                      "example": "Data penerbangan telah berhasil ditambahkan"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "08a593b0-3f4b-4612-a151-98efd52ae926"
+                        },
+                        "origin_airport_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": 2
+                        },
+                        "destination_airport_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": 7
+                        },
+                        "airline_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": 4
+                        },
+                        "flight_number": {
+                          "type": "string",
+                          "example": "JT-232"
+                        },
+                        "departure_date": {
+                          "type": "string",
+                          "example": "2023-07-29T00:00:00.000Z"
+                        },
+                        "departure_time": {
+                          "type": "string",
+                          "example": "13:24:16.1616"
+                        },
+                        "arrival_date": {
+                          "type": "string",
+                          "example": "2023-07-29"
+                        },
+                        "arrival_time": {
+                          "type": "string",
+                          "example": "19:24:16.1616"
+                        },
+                        "capacity": {
+                          "type": "integer",
+                          "example": 72
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "In Flight Entertainment"
+                        },
+                        "class": {
+                          "type": "string",
+                          "example": "Economy"
+                        },
+                        "price": {
+                          "type": "integer",
+                          "example": 900000
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2023-06-21T02:13:55.014Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2023-06-21T02:13:55.014Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Check the data is valid and must be filled in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "error.message"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Empty fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Empty Field",
+                    "value": {
+                      "status": "Error",
+                      "message": "semua data wajib diisi"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search-flight": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Get All Flight Based On Query.",
+        "description": "Get All Flight",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "location_from",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "none"
+          },
+          {
+            "in": "query",
+            "name": "location_to",
+            "schema": {
+              "type": "string",
+              "minimum": 1
+            },
+            "description": "none"
+          },
+          {
+            "in": "query",
+            "name": "departure_date",
+            "schema": {
+              "type": "string",
+              "minimum": 1
+            },
+            "description": "none"
+          },
+          {
+            "in": "query",
+            "name": "return_date",
+            "schema": {
+              "type": "string",
+              "minimum": 1
+            },
+            "description": "none"
+          },
+          {
+            "in": "query",
+            "name": "passengers",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "none"
+          },
+          {
+            "in": "query",
+            "name": "seat_class",
+            "schema": {
+              "type": "string",
+              "minimum": 1
+            },
+            "description": "none"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "departureFlights": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "08a593b0-3f4b-4612-a151-98efd52ae926"
+                              },
+                              "origin_airport_id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": 2
+                              },
+                              "destination_airport_id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": 7
+                              },
+                              "airline_id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": 4
+                              },
+                              "flight_number": {
+                                "type": "string",
+                                "example": "JT-232"
+                              },
+                              "departure_date": {
+                                "type": "string",
+                                "example": "2023-07-29T00:00:00.000Z"
+                              },
+                              "departure_time": {
+                                "type": "string",
+                                "example": "13:24:16.1616"
+                              },
+                              "arrival_date": {
+                                "type": "string",
+                                "example": "2023-07-29"
+                              },
+                              "arrival_time": {
+                                "type": "string",
+                                "example": "19:24:16.1616"
+                              },
+                              "capacity": {
+                                "type": "integer",
+                                "example": 72
+                              },
+                              "description": {
+                                "type": "string",
+                                "example": "In Flight     Entertainment"
+                              },
+                              "class": {
+                                "type": "string",
+                                "example": "Economy"
+                              },
+                              "price": {
+                                "type": "integer",
+                                "example": 900000
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "example": "2023-06-21T02:13:55 .014Z"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "example": "2023-06-21T02:13:55   .014Z"
+                              },
+                              "originAirport": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "2"
+                                  },
+                                  "airport_code": {
+                                    "type": "string",
+                                    "example": "KNO"
+                                  },
+                                  "airport_name": {
+                                    "type": "string",
+                                    "example": "Kualanamu     International"
+                                  },
+                                  "location": {
+                                    "type": "string",
+                                    "example": "Medan"
+                                  },
+                                  "location_acronym": {
+                                    "type": "string",
+                                    "example": "MDN"
+                                  },
+                                  "createdAt": {
+                                    "type": "string",
+                                    "example": "2023-06-21T02:13:55.014Z"
+                                  },
+                                  "updatedAt": {
+                                    "type": "string",
+                                    "example": "2023-06-21T02:13   :55.014Z"
+                                  }
+                                }
+                              },
+                              "destinationAirport": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "7"
+                                  },
+                                  "airport_code": {
+                                    "type": "string",
+                                    "example": "DPS"
+                                  },
+                                  "airport_name": {
+                                    "type": "string",
+                                    "example": "I Gusti Ngurah Rai International"
+                                  },
+                                  "location": {
+                                    "type": "string",
+                                    "example": "Denpasar"
+                                  },
+                                  "location_acronym": {
+                                    "type": "string",
+                                    "example": "DPR"
+                                  },
+                                  "createdAt": {
+                                    "type": "string",
+                                    "example": "2023-06-21T02:13:55.014Z"
+                                  },
+                                  "updatedAt": {
+                                    "type": "string",
+                                    "example": "2023-06    -21T02:13:55.014Z"
+                                  }
+                                }
+                              },
+                              "airline": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "4"
+                                  },
+                                  "airline_code": {
+                                    "type": "string",
+                                    "example": "JT"
+                                  },
+                                  "airport_name": {
+                                    "type": "string",
+                                    "example": "Lion Air"
+                                  },
+                                  "airline_image": {
+                                    "type": "string",
+                                    "example": "https://download.logo.wine/logo/Lion_Air/Lion_Air-Logo.wine.png"
+                                  },
+                                  "createdAt": {
+                                    "type": "string",
+                                    "example": "2023-06-21T02   :13:55.014Z"
+                                  },
+                                  "updatedAt": {
+                                    "type": "string",
+                                    "example": "2023-06-21T02:13:55.014Z"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "returnFlight": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": ""
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Check the data is valid and must be filled in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "No FLight"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/flight/{id}": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Get Flight By ID.",
+        "description": "Get Flight By ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "The Flight ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Flight1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Check the data is valid and must be filled in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "error.message"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Edit flight data by id.",
+        "description": "Modify flight data by id.",
+        "requestBody": {
+          "description": "Allowed fields to update (all fields)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlightDataEdit"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the flights to edit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Data penerbangan telah berhasil diperbarui"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Empty fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Empty Field",
+                    "value": {
+                      "status": "Error",
+                      "message": "semua data wajib diisi"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Delete flights data by id.",
+        "description": "Delete flights data by id.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the flights to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Delete flights data successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transaction": {
+      "get": {
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "Get All Transaction History.",
+        "description": "Get All Transaction History",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "15aebc87-df74-4742-9f56-3b3ca38d061e"
+                          },
+                          "departure_flight_id": {
+                            "type": "string",
+                            "example": "9d65afbb-3356-4037-b3ed-8794430f9a89"
+                          },
+                          "return_flight_id": {
+                            "type": "string",
+                            "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                          },
+                          "user_id": {
+                            "type": "string",
+                            "example": "1eabb95b-3080-4320-a633-016beee9e8af"
+                          },
+                          "booking_code": {
+                            "type": "string",
+                            "example": "1eabb95b-3080-4320-a633-016beee9e8af"
+                          },
+                          "amount": {
+                            "type": "integer",
+                            "example": 1500000
+                          },
+                          "payment_method": {
+                            "type": "string",
+                            "example": null
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2023-06-21T02:13:55.014Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2023-06-21T02:13:55.014Z"
+                          },
+                          "departureFlight": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "9d65afbb-3356-4037-b3ed-8794430f9a89"
+                              },
+                              "origin_airport_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "destination_airport_id": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "airline_id": {
+                                "type": "integer",
+                                "example": 4
+                              },
+                              "flight_number": {
+                                "type": "string",
+                                "example": "JT-139"
+                              },
+                              "departure_date": {
+                                "type": "string",
+                                "example": "2023-10-11"
+                              },
+                              "departure_time": {
+                                "type": "string",
+                                "example": "11:59:08.088"
+                              },
+                              "arrival_date": {
+                                "type": "string",
+                                "example": "2023-10-11"
+                              },
+                              "arrival_time": {
+                                "type": "string",
+                                "example": "12:59:08.088"
+                              },
+                              "capacity": {
+                                "type": "integer",
+                                "example": 72
+                              },
+                              "description": {
+                                "type": "string",
+                                "example": "In Flight Entertainment"
+                              },
+                              "class": {
+                                "type": "string",
+                                "example": "Premium Economy"
+                              },
+                              "price": {
+                                "type": "integer",
+                                "example": 550000
+                              }
+                            }
+                          },
+                          "returnFlight": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                              },
+                              "origin_airport_id": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "destination_airport_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "airline_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "flight_number": {
+                                "type": "string",
+                                "example": "ID-770"
+                              },
+                              "departure_date": {
+                                "type": "string",
+                                "example": "2023-11-20"
+                              },
+                              "departure_time": {
+                                "type": "string",
+                                "example": "09:45:57.5757"
+                              },
+                              "arrival_date": {
+                                "type": "string",
+                                "example": "2023-11-20"
+                              },
+                              "arrival_time": {
+                                "type": "string",
+                                "example": "13:45:57.5757"
+                              },
+                              "capacity": {
+                                "type": "integer",
+                                "example": 72
+                              },
+                              "description": {
+                                "type": "string",
+                                "example": "In Flight Entertainment"
+                              },
+                              "class": {
+                                "type": "string",
+                                "example": "Premium Economy"
+                              },
+                              "price": {
+                                "type": "integer",
+                                "example": 600000
+                              }
+                            }
+                          },
+                          "user": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "example": "Shinzou"
+                              }
+                            }
+                          },
+                          "tickets": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "0870abfb-5220-45c7-86b5-8554221c8db7"
+                              },
+                              "transaction_id": {
+                                "type": "string",
+                                "example": "15aebc87-df74-4742-9f56-3b3ca38d061e"
+                              },
+                              "passenger_id": {
+                                "type": "string",
+                                "example": "e783f1f7-b3db-44aa-9ab1-07992ec6b06a"
+                              },
+                              "seat_id": {
+                                "type": "string",
+                                "example": 20
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "example": "2023-06-21T02:13:55.014Z"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "example": "2023-06-21T02:13:55.014Z"
+                              },
+                              "passenger": {
+                                "type": "object",
+                                "properties": {
+                                  "title": {
+                                    "type": "string",
+                                    "example": "Mr"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "example": "Renaldy"
+                                  },
+                                  "family_name": {
+                                    "type": "string",
+                                    "example": null
+                                  },
+                                  "identity_number": {
+                                    "type": "integer",
+                                    "example": 123456789
+                                  },
+                                  "phone_number": {
+                                    "type": "integer",
+                                    "example": 98129031
+                                  },
+                                  "seat": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": 20
+                                      },
+                                      "flight_id": {
+                                        "type": "string",
+                                        "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                                      },
+                                      "seat_number": {
+                                        "type": "string",
+                                        "example": "A2"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Check the data is valid and must be filled in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "error.message"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "add transaction data.",
+        "description": "Add new transaction data to database",
+        "requestBody": {
+          "description": "Required fields (all fields)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "15aebc87-df74-4742-9f56-3b3ca38d061e"
+                          },
+                          "departure_flight_id": {
+                            "type": "string",
+                            "example": "9d65afbb-3356-4037-b3ed-8794430f9a89"
+                          },
+                          "return_flight_id": {
+                            "type": "string",
+                            "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                          },
+                          "user_id": {
+                            "type": "string",
+                            "example": "1eabb95b-3080-4320-a633-016beee9e8af"
+                          },
+                          "booking_code": {
+                            "type": "string",
+                            "example": "1eabb95b-3080-4320-a633-016beee9e8af"
+                          },
+                          "amount": {
+                            "type": "integer",
+                            "example": 1500000
+                          },
+                          "payment_method": {
+                            "type": "string",
+                            "example": null
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2023-06-21T02:13:55.014Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2023-06-21T02:13:55.014Z"
+                          },
+                          "departureFlight": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "9d65afbb-3356-4037-b3ed-8794430f9a89"
+                              },
+                              "origin_airport_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "destination_airport_id": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "airline_id": {
+                                "type": "integer",
+                                "example": 4
+                              },
+                              "flight_number": {
+                                "type": "string",
+                                "example": "JT-139"
+                              },
+                              "departure_date": {
+                                "type": "string",
+                                "example": "2023-10-11"
+                              },
+                              "departure_time": {
+                                "type": "string",
+                                "example": "11:59:08.088"
+                              },
+                              "arrival_date": {
+                                "type": "string",
+                                "example": "2023-10-11"
+                              },
+                              "arrival_time": {
+                                "type": "string",
+                                "example": "12:59:08.088"
+                              },
+                              "capacity": {
+                                "type": "integer",
+                                "example": 72
+                              },
+                              "description": {
+                                "type": "string",
+                                "example": "In Flight Entertainment"
+                              },
+                              "class": {
+                                "type": "string",
+                                "example": "Premium Economy"
+                              },
+                              "price": {
+                                "type": "integer",
+                                "example": 550000
+                              }
+                            }
+                          },
+                          "returnFlight": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                              },
+                              "origin_airport_id": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "destination_airport_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "airline_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "flight_number": {
+                                "type": "string",
+                                "example": "ID-770"
+                              },
+                              "departure_date": {
+                                "type": "string",
+                                "example": "2023-11-20"
+                              },
+                              "departure_time": {
+                                "type": "string",
+                                "example": "09:45:57.5757"
+                              },
+                              "arrival_date": {
+                                "type": "string",
+                                "example": "2023-11-20"
+                              },
+                              "arrival_time": {
+                                "type": "string",
+                                "example": "13:45:57.5757"
+                              },
+                              "capacity": {
+                                "type": "integer",
+                                "example": 72
+                              },
+                              "description": {
+                                "type": "string",
+                                "example": "In Flight Entertainment"
+                              },
+                              "class": {
+                                "type": "string",
+                                "example": "Premium Economy"
+                              },
+                              "price": {
+                                "type": "integer",
+                                "example": 600000
+                              }
+                            }
+                          },
+                          "user": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "example": "Shinzou"
+                              }
+                            }
+                          },
+                          "tickets": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "0870abfb-5220-45c7-86b5-8554221c8db7"
+                              },
+                              "transaction_id": {
+                                "type": "string",
+                                "example": "15aebc87-df74-4742-9f56-3b3ca38d061e"
+                              },
+                              "passenger_id": {
+                                "type": "string",
+                                "example": "e783f1f7-b3db-44aa-9ab1-07992ec6b06a"
+                              },
+                              "seat_id": {
+                                "type": "string",
+                                "example": 20
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "example": "2023-06-21T02:13:55.014Z"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "example": "2023-06-21T02:13:55.014Z"
+                              },
+                              "passenger": {
+                                "type": "object",
+                                "properties": {
+                                  "title": {
+                                    "type": "string",
+                                    "example": "Mr"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "example": "Renaldy"
+                                  },
+                                  "family_name": {
+                                    "type": "string",
+                                    "example": null
+                                  },
+                                  "identity_number": {
+                                    "type": "integer",
+                                    "example": 123456789
+                                  },
+                                  "phone_number": {
+                                    "type": "integer",
+                                    "example": 98129031
+                                  },
+                                  "seat": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": 20
+                                      },
+                                      "flight_id": {
+                                        "type": "string",
+                                        "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                                      },
+                                      "seat_number": {
+                                        "type": "string",
+                                        "example": "A2"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Empty fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Empty Field",
+                    "value": {
+                      "status": "Error",
+                      "message": "semua data wajib diisi"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transaction/{id}": {
+      "get": {
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "Get Transaction By ID.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "The Transaction ID"
+          }
+        ],
+        "description": "Get All Transaction",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "15aebc87-df74-4742-9f56-3b3ca38d061e"
+                          },
+                          "departure_flight_id": {
+                            "type": "string",
+                            "example": "9d65afbb-3356-4037-b3ed-8794430f9a89"
+                          },
+                          "return_flight_id": {
+                            "type": "string",
+                            "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                          },
+                          "user_id": {
+                            "type": "string",
+                            "example": "1eabb95b-3080-4320-a633-016beee9e8af"
+                          },
+                          "booking_code": {
+                            "type": "string",
+                            "example": "1eabb95b-3080-4320-a633-016beee9e8af"
+                          },
+                          "amount": {
+                            "type": "integer",
+                            "example": 1500000
+                          },
+                          "payment_method": {
+                            "type": "string",
+                            "example": null
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2023-06-21T02:13:55.014Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2023-06-21T02:13:55.014Z"
+                          },
+                          "departureFlight": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "9d65afbb-3356-4037-b3ed-8794430f9a89"
+                              },
+                              "origin_airport_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "destination_airport_id": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "airline_id": {
+                                "type": "integer",
+                                "example": 4
+                              },
+                              "flight_number": {
+                                "type": "string",
+                                "example": "JT-139"
+                              },
+                              "departure_date": {
+                                "type": "string",
+                                "example": "2023-10-11"
+                              },
+                              "departure_time": {
+                                "type": "string",
+                                "example": "11:59:08.088"
+                              },
+                              "arrival_date": {
+                                "type": "string",
+                                "example": "2023-10-11"
+                              },
+                              "arrival_time": {
+                                "type": "string",
+                                "example": "12:59:08.088"
+                              },
+                              "capacity": {
+                                "type": "integer",
+                                "example": 72
+                              },
+                              "description": {
+                                "type": "string",
+                                "example": "In Flight Entertainment"
+                              },
+                              "class": {
+                                "type": "string",
+                                "example": "Premium Economy"
+                              },
+                              "price": {
+                                "type": "integer",
+                                "example": 550000
+                              }
+                            }
+                          },
+                          "returnFlight": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                              },
+                              "origin_airport_id": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "destination_airport_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "airline_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "flight_number": {
+                                "type": "string",
+                                "example": "ID-770"
+                              },
+                              "departure_date": {
+                                "type": "string",
+                                "example": "2023-11-20"
+                              },
+                              "departure_time": {
+                                "type": "string",
+                                "example": "09:45:57.5757"
+                              },
+                              "arrival_date": {
+                                "type": "string",
+                                "example": "2023-11-20"
+                              },
+                              "arrival_time": {
+                                "type": "string",
+                                "example": "13:45:57.5757"
+                              },
+                              "capacity": {
+                                "type": "integer",
+                                "example": 72
+                              },
+                              "description": {
+                                "type": "string",
+                                "example": "In Flight Entertainment"
+                              },
+                              "class": {
+                                "type": "string",
+                                "example": "Premium Economy"
+                              },
+                              "price": {
+                                "type": "integer",
+                                "example": 600000
+                              }
+                            }
+                          },
+                          "user": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "example": "Shinzou"
+                              }
+                            }
+                          },
+                          "tickets": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "0870abfb-5220-45c7-86b5-8554221c8db7"
+                              },
+                              "transaction_id": {
+                                "type": "string",
+                                "example": "15aebc87-df74-4742-9f56-3b3ca38d061e"
+                              },
+                              "passenger_id": {
+                                "type": "string",
+                                "example": "e783f1f7-b3db-44aa-9ab1-07992ec6b06a"
+                              },
+                              "seat_id": {
+                                "type": "string",
+                                "example": 20
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "example": "2023-06-21T02:13:55.014Z"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "example": "2023-06-21T02:13:55.014Z"
+                              },
+                              "passenger": {
+                                "type": "object",
+                                "properties": {
+                                  "title": {
+                                    "type": "string",
+                                    "example": "Mr"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "example": "Renaldy"
+                                  },
+                                  "family_name": {
+                                    "type": "string",
+                                    "example": null
+                                  },
+                                  "identity_number": {
+                                    "type": "integer",
+                                    "example": 123456789
+                                  },
+                                  "phone_number": {
+                                    "type": "integer",
+                                    "example": 98129031
+                                  },
+                                  "seat": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": 20
+                                      },
+                                      "flight_id": {
+                                        "type": "string",
+                                        "example": "b0712acb-45f3-423a-a0d1-7e61d444d6f9"
+                                      },
+                                      "seat_number": {
+                                        "type": "string",
+                                        "example": "A2"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Check the data is valid and must be filled in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "error.message"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transaction/{booking_code}": {
+      "put": {
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "Add payment Method",
+        "description": "Add Pqyment Method to transaction data",
+        "requestBody": {
+          "description": "add payment_method to transaction data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "payment_method": {
+                    "type": "string",
+                    "example": "Gopay"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "booking_code",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "booking code of transaction"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "metode pmbayaran telah berhasil ditambahkan"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegisterCredentials": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "phone_number",
+          "password"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "johndoe@gmail.com"
+          },
+          "phone_number": {
+            "type": "string",
+            "example": "08123456789"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
+        }
+      },
+      "RegisterCredentialsRequired": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "LoginCredentials": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "johndoe@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
+        }
+      },
+      "EmailAlreadyTaken": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "EmptyToken": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "AirportsData": {
+        "type": "object",
+        "required": [
+          "airport_code",
+          "airport_name",
+          "location",
+          "location_acronym"
+        ],
+        "properties": {
+          "airport_code": {
+            "type": "string",
+            "example": "BTJ"
+          },
+          "airport_name": {
+            "type": "string",
+            "example": "Sultan Iskandar Muda International"
+          },
+          "location": {
+            "type": "string",
+            "example": "Banda Aceh"
+          },
+          "location_acronym": {
+            "type": "string",
+            "example": "BNA"
+          }
+        }
+      },
+      "AirportsDataEdit": {
+        "type": "object",
+        "required": [
+          "airport_code",
+          "airport_name",
+          "location",
+          "location_acronym"
+        ],
+        "properties": {
+          "airport_code": {
+            "type": "string",
+            "example": "BTJ"
+          },
+          "airport_name": {
+            "type": "string",
+            "example": "Bandar Udara Internasional Sultan Iskandar Muda"
+          },
+          "location": {
+            "type": "string",
+            "example": "Banda Aceh"
+          },
+          "location_acronym": {
+            "type": "string",
+            "example": "BNA"
+          }
+        }
+      },
+      "AirlineData": {
+        "type": "object",
+        "required": [
+          "airline_code",
+          "airline_name",
+          "airline_image"
+        ],
+        "properties": {
+          "airline_code": {
+            "type": "string",
+            "example": "ID"
+          },
+          "airline_name": {
+            "type": "string",
+            "example": "Batik Air"
+          },
+          "airline_image": {
+            "type": "string",
+            "example": "https://seeklogo.com/images/B/batik-air-logo-EDCC357AB3-seeklogo.com.png"
+          }
+        }
+      },
+      "AirlineDataEdit": {
+        "type": "object",
+        "required": [
+          "airline_code",
+          "airline_name",
+          "airline_image"
+        ],
+        "properties": {
+          "airline_code": {
+            "type": "string",
+            "example": "BAT"
+          },
+          "airline_name": {
+            "type": "string",
+            "example": "Batik Air"
+          },
+          "airline_image": {
+            "type": "string",
+            "example": "https://seeklogo.com/images/B/batik-air-logo-EDCC357AB3-seeklogo.com.png"
+          }
+        }
+      },
+      "Flights": {
+        "type": "array",
+        "items": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/Flight1"
+            },
+            {
+              "$ref": "#/components/schemas/Flight2"
+            }
+          ]
+        }
+      },
+      "Flight1": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Success"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "08a593b0-3f4b-4612-a151-98efd52ae926"
+                },
+                "origin_airport_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": 2
+                },
+                "destination_airport_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": 7
+                },
+                "airline_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": 4
+                },
+                "flight_number": {
+                  "type": "string",
+                  "example": "JT-232"
+                },
+                "is_verified": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "departure_date": {
+                  "type": "string",
+                  "example": "2023-07-29T00:00:00.000Z"
+                },
+                "departure_time": {
+                  "type": "string",
+                  "example": "13:24:16.1616"
+                },
+                "arrival_date": {
+                  "type": "string",
+                  "example": "2023-07-29"
+                },
+                "arrival_time": {
+                  "type": "string",
+                  "example": "19:24:16.1616"
+                },
+                "capacity": {
+                  "type": "integer",
+                  "example": 72
+                },
+                "description": {
+                  "type": "string",
+                  "example": "In Flight Entertainment"
+                },
+                "class": {
+                  "type": "string",
+                  "example": "Economy"
+                },
+                "price": {
+                  "type": "integer",
+                  "example": 900000
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2023-06-21T02:13:55.014Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2023-06-21T02:13:55.014Z"
+                },
+                "originAirport": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "2"
+                    },
+                    "airport_code": {
+                      "type": "string",
+                      "example": "KNO"
+                    },
+                    "airport_name": {
+                      "type": "string",
+                      "example": "Kualanamu International"
+                    },
+                    "location": {
+                      "type": "string",
+                      "example": "Medan"
+                    },
+                    "location_acronym": {
+                      "type": "string",
+                      "example": "MDN"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    }
+                  }
+                },
+                "destinationAirport": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "7"
+                    },
+                    "airport_code": {
+                      "type": "string",
+                      "example": "DPS"
+                    },
+                    "airport_name": {
+                      "type": "string",
+                      "example": "I Gusti Ngurah Rai International"
+                    },
+                    "location": {
+                      "type": "string",
+                      "example": "Denpasar"
+                    },
+                    "location_acronym": {
+                      "type": "string",
+                      "example": "DPR"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    }
+                  }
+                },
+                "airline": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "4"
+                    },
+                    "airline_code": {
+                      "type": "string",
+                      "example": "JT"
+                    },
+                    "airport_name": {
+                      "type": "string",
+                      "example": "Lion Air"
+                    },
+                    "airline_image": {
+                      "type": "string",
+                      "example": "https://download.logo.wine/logo/Lion_Air/Lion_Air-Logo.wine.png"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    },
+                    "seats": {
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/components/schemas/Seat1"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Flight2": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Success"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "08a593b0-3f4b-4612-a151-98efd52ae9262"
+                },
+                "origin_airport_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": 2
+                },
+                "destination_airport_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": 7
+                },
+                "airline_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": 4
+                },
+                "flight_number": {
+                  "type": "string",
+                  "example": "JT-232"
+                },
+                "is_verified": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "departure_date": {
+                  "type": "string",
+                  "example": "2023-07-29T00:00:00.000Z"
+                },
+                "departure_time": {
+                  "type": "string",
+                  "example": "13:24:16.1616"
+                },
+                "arrival_date": {
+                  "type": "string",
+                  "example": "2023-07-29"
+                },
+                "arrival_time": {
+                  "type": "string",
+                  "example": "19:24:16.1616"
+                },
+                "capacity": {
+                  "type": "integer",
+                  "example": 72
+                },
+                "description": {
+                  "type": "string",
+                  "example": "In Flight Entertainment"
+                },
+                "class": {
+                  "type": "string",
+                  "example": "Economy"
+                },
+                "price": {
+                  "type": "integer",
+                  "example": 900000
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2023-06-21T02:13:55.014Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2023-06-21T02:13:55.014Z"
+                },
+                "originAirport": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "2"
+                    },
+                    "airport_code": {
+                      "type": "string",
+                      "example": "KNO"
+                    },
+                    "airport_name": {
+                      "type": "string",
+                      "example": "Kualanamu International"
+                    },
+                    "location": {
+                      "type": "string",
+                      "example": "Medan"
+                    },
+                    "location_acronym": {
+                      "type": "string",
+                      "example": "MDN"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    }
+                  }
+                },
+                "destinationAirport": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "7"
+                    },
+                    "airport_code": {
+                      "type": "string",
+                      "example": "DPS"
+                    },
+                    "airport_name": {
+                      "type": "string",
+                      "example": "I Gusti Ngurah Rai International"
+                    },
+                    "location": {
+                      "type": "string",
+                      "example": "Denpasar"
+                    },
+                    "location_acronym": {
+                      "type": "string",
+                      "example": "DPR"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    }
+                  }
+                },
+                "airline": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "4"
+                    },
+                    "airline_code": {
+                      "type": "string",
+                      "example": "JT"
+                    },
+                    "airport_name": {
+                      "type": "string",
+                      "example": "Lion Air"
+                    },
+                    "airline_image": {
+                      "type": "string",
+                      "example": "https://download.logo.wine/logo/Lion_Air/Lion_Air-Logo.wine.png"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    },
+                    "seats": {
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/components/schemas/Seat1"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AddFlightCredentials": {
+        "type": "object",
+        "required": [
+          "origin_airport_id",
+          "destination_airport_id",
+          "airline_id",
+          "flight_number",
+          "departure_date",
+          "departure_time",
+          "arrival_date",
+          "arrival_time",
+          "capacity",
+          "description",
+          "class",
+          "price"
+        ],
+        "properties": {
+          "origin_airport_id": {
+            "type": "integer",
+            "example": 5
+          },
+          "destination_airport_id": {
+            "type": "integer",
+            "example": 7
+          },
+          "airline_id": {
+            "type": "integer",
+            "example": 3
+          },
+          "flight_number": {
+            "type": "string",
+            "example": "GA-999"
+          },
+          "departure_date": {
+            "type": "string",
+            "example": "2023-08-09T00:00:00.000Z"
+          },
+          "departure_time": {
+            "type": "string",
+            "example": "10:00:00"
+          },
+          "arrival_date": {
+            "type": "string",
+            "example": "2023-08-09T00:00:00.000Z"
+          },
+          "arrival_time": {
+            "type": "string",
+            "example": "15:00:00"
+          },
+          "capacity": {
+            "type": "integer",
+            "example": 90
+          },
+          "description": {
+            "type": "string",
+            "example": "In Flight Entertainment"
+          },
+          "class": {
+            "type": "string",
+            "example": "First Class"
+          },
+          "price": {
+            "type": "integer",
+            "example": 19000000
+          }
+        }
+      },
+      "FlightDataEdit": {
+        "type": "object",
+        "required": [
+          "origin_airport_id",
+          "destination_airport_id",
+          "airline_id",
+          "flight_number",
+          "departure_date",
+          "departure_time",
+          "arrival_date",
+          "arrival_time",
+          "capacity",
+          "description",
+          "class",
+          "price"
+        ],
+        "properties": {
+          "origin_airport_id": {
+            "type": "integer",
+            "example": 5
+          },
+          "destination_airport_id": {
+            "type": "integer",
+            "example": 7
+          },
+          "airline_id": {
+            "type": "integer",
+            "example": 3
+          },
+          "flight_number": {
+            "type": "string",
+            "example": "GA-999"
+          },
+          "departure_date": {
+            "type": "string",
+            "example": "2023-08-09T00:00:00.000Z"
+          },
+          "departure_time": {
+            "type": "string",
+            "example": "10:00:00"
+          },
+          "arrival_date": {
+            "type": "string",
+            "example": "2023-08-09T00:00:00.000Z"
+          },
+          "arrival_time": {
+            "type": "string",
+            "example": "15:00:00"
+          },
+          "capacity": {
+            "type": "integer",
+            "example": 90
+          },
+          "description": {
+            "type": "string",
+            "example": "In Flight Entertainment"
+          },
+          "class": {
+            "type": "string",
+            "example": "First Class"
+          },
+          "price": {
+            "type": "integer",
+            "example": 2400000
+          }
+        }
+      },
+      "TransactionData": {
+        "type": "object",
+        "properties": {
+          "departure_flight_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "01ec326e-71cd-4b30-bcc5-29aeb29cd956"
+          },
+          "return_flight_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "321e13e0-98ca-4b04-9871-de2f7b359b8d"
+          },
+          "passengers": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Passengers1"
+                },
+                {
+                  "$ref": "#/components/schemas/Passengers2"
+                }
+              ]
+            }
+          },
+          "ammount": {
+            "type": "integer",
+            "example": 1500000
+          }
+        }
+      },
+      "Passengers1": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Mr"
+          },
+          "name": {
+            "type": "string",
+            "example": "Billy"
+          },
+          "family_name": {
+            "type": "string",
+            "example": "Cahyadi"
+          },
+          "identity_number": {
+            "type": "integer",
+            "example": 123456789
+          },
+          "phone_number": {
+            "type": "integer",
+            "example": 123456789
+          },
+          "seat_number": {
+            "type": "string",
+            "example": "A1"
+          }
+        }
+      },
+      "Passengers2": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Mr"
+          },
+          "name": {
+            "type": "string",
+            "example": "Renaldy"
+          },
+          "family_name": {
+            "type": "string",
+            "example": null
+          },
+          "identity_number": {
+            "type": "integer",
+            "example": 123459874
+          },
+          "phone_number": {
+            "type": "integer",
+            "example": 987654321
+          },
+          "seat_number": {
+            "type": "string",
+            "example": "A2"
+          }
+        }
+      },
+      "Seat1": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "flight_id": {
+            "type": "string",
+            "example": "08a593b0-3f4b-4612-a151-98efd52ae926"
+          },
+          "seat_number": {
+            "type": "string",
+            "example": "A1"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-06-29T17:31:09.540Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-06-29T17:31:09.540Z"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerToken": {
+        "description": "Note: Token required, you may to login first then paste token code here",
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
