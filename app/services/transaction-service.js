@@ -1,5 +1,6 @@
 const mailService = require("./mail-service");
 const flightRepository = require("../repositories/flight-repository");
+const notificationRepository = require("../repositories/notification-repository");
 const passengerRepository = require("../repositories/passenger-repository");
 const seatRepository = require("../repositories/seat-repository");
 const transactionRepository = require("../repositories/transaction-repository");
@@ -117,6 +118,12 @@ const addTransaction = async (req) => {
       });
     }
 
+    // Add notification
+    await notificationRepository.addNotification({
+      user_id: id,
+      message: `Anda telah melakukan pemesanan tiket #${booking_code}. Silakan selesaikan pembayaran sekarang juga!`,
+    });
+
     // Send payment confirmation to email
     await mailService.sendMail(email, "Konfirmasi Pembayaran",
       `
@@ -156,6 +163,12 @@ const addPayment = async (req) => {
 
     const transaction = await transactionRepository.updateTransactionByBookingCode(booking_code, { 
       payment_method
+    });
+
+    // Add notification
+    await notificationRepository.addNotification({
+      user_id: id,
+      message: `Pembayaran tiket #${booking_code} Anda telah diterima. Terima kasih telah memesan tiket di Shinzou!`,
     });
 
     // Send payment success to email

@@ -50,9 +50,5 @@ router.put("/api/v1/transaction/:booking_code", middlewares.authorize, controlle
 
 // Notification
 router.get("/api/v1/notification", middlewares.authorize, controllers.notificationController.getNotifications);
-// router.get("/api/v1/notification/:id", middlewares.authorize, controllers.notificationController.getNotification);
-// router.post("/api/v1/notification", middlewares.authorize, controllers.notificationController.addNotification);
-// router.put("/api/v1/notification/:id", middlewares.authorize, controllers.notificationController.updateNotification);
-// router.delete("/api/v1/notification/:id", middlewares.authorize, controllers.notificationController.deleteNotification);
 
 module.exports = router;

@@ -22,7 +22,7 @@ module.exports = {
         type: Sequelize.TEXT
       },
       mark_as_read: {
-        allowNull: false,
+        allowNull: true,
         defaultValue: false,
         type: Sequelize.BOOLEAN
       },
