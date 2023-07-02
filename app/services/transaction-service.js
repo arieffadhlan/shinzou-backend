@@ -89,7 +89,7 @@ const addTransaction = async (req) => {
       ammount
     });    
 
-    // reduce the capacity based on the number of passengers
+    // reduce departure flight capacity based on the number of passengers
     const departureFlight = await flightRepository.getFlight(departure_flight_id);
     await flightRepository.updateFlight(departureFlight.id, {
       capacity: departureFlight.capacity -= passengers.length
@@ -103,13 +103,13 @@ const addTransaction = async (req) => {
     });
     
     if (return_flight_id) {
-      // reduce the capacity based on the number of passengers
+      // reduce return flight capacity based on the number of passengers
       const returnFlight = await flightRepository.getFlight(return_flight_id);
       await flightRepository.updateFlight(returnFlight.id, {
         capacity: returnFlight.capacity -= passengers.length
       });
       
-      // Save departure Ticket
+      // Save return Ticket
       await saveTransactionData({
         flight_id: return_flight_id,
         transaction_id: transaction.id,
@@ -118,7 +118,7 @@ const addTransaction = async (req) => {
     }
 
     // Send payment confirmation to email
-    return await mailService.sendMail(email, "Konfirmasi Pembayaran",
+    await mailService.sendMail(email, "Konfirmasi Pembayaran",
       `
         <div style="font-size: 14px;">
           <span>Hai ${name},</span> <br /> <br />
@@ -137,6 +137,8 @@ const addTransaction = async (req) => {
         </div>
       `
     );
+
+    return transaction
   } catch (error) {
     if (error instanceof ApplicationError) {
       throw new ApplicationError(error.statusCode, error.message);
