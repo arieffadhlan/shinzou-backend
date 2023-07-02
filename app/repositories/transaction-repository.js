@@ -1,4 +1,5 @@
 const { 
+  Airline, 
   Airport, 
   Flight, 
   Passenger, 
@@ -19,6 +20,10 @@ const getTransactions = () => {
         },
         include: [
           {
+            model: Airline,
+            as: "airline"
+          },
+          {
             model: Airport,
             as: "originAirport"
           },
@@ -35,6 +40,10 @@ const getTransactions = () => {
           exclude: ["createdAt", "updatedAt"]
         },
         include: [
+          {
+            model: Airline,
+            as: "airline"
+          },
           {
             model: Airport,
             as: "originAirport"
@@ -85,6 +94,10 @@ const getTransaction = (id) => {
         },
         include: [          
           {
+            model: Airline,
+            as: "airline"
+          },
+          {
             model: Airport,
             as: "originAirport",
             attributes: {
@@ -107,6 +120,10 @@ const getTransaction = (id) => {
           exclude: ["createdAt", "updatedAt"]
         },
         include: [          
+          {
+            model: Airline,
+            as: "airline"
+          },
           {
             model: Airport,
             as: "originAirport",
