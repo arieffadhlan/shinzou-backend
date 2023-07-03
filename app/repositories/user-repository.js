@@ -30,8 +30,8 @@ const createUser = (data) => {
   return User.create(data);
 }
 
-const updateUser = (id, args) => {
-  return User.update(args, {
+const updateUser = (id, data) => {
+  return User.update(data, {
     where: { id }
   });
 }

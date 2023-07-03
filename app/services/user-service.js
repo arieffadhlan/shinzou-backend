@@ -35,7 +35,32 @@ const getUser = async (id) => {
   }
 }
 
+const updateUser = async (req) => {
+  try {
+    const { id } = req.params;
+    const { name, email, phone_number } = req.body;
+
+    if (!name || !email || !phone_number) {
+      throw new ApplicationError(404, "nama, email, dan nomor telepon wajib diisi.");
+    }
+
+    const user = await getUser(id);
+    return await userRepository.updateUser(user.id, {
+      name,
+      email,
+      phone_number
+    });
+  } catch (error) {
+    if (error instanceof ApplicationError) {
+      throw new ApplicationError(error.statusCode, error.message);
+    } else {
+      throw new Error(error.message);
+    }
+  }
+}
+
 module.exports = {
   getUsers,
   getUser,
+  updateUser
 }

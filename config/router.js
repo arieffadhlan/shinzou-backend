@@ -18,8 +18,9 @@ router.post("/api/v1/forgot-password", controllers.authController.forgotPassword
 router.post("/api/v1/reset-password/:token", controllers.authController.resetPassword);
 
 // User
-router.get("/api/v1/user", controllers.userController.getUsers);
-router.get("/api/v1/user/:id", controllers.userController.getUser);
+router.get("/api/v1/user", middlewares.authorize, controllers.userController.getUsers);
+router.get("/api/v1/user/:id", middlewares.authorize, controllers.userController.getUser);
+router.put("/api/v1/user/:id", middlewares.authorize, controllers.userController.updateUser);
 
 // Airport
 router.get("/api/v1/airport", controllers.airportController.getAirports);
