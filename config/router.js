@@ -17,6 +17,10 @@ router.post("/api/v1/verify", controllers.authController.verifyOTP);
 router.post("/api/v1/forgot-password", controllers.authController.forgotPassword);
 router.post("/api/v1/reset-password/:token", controllers.authController.resetPassword);
 
+// User
+router.get("/api/v1/user", controllers.userController.getUsers);
+router.get("/api/v1/user/:id", controllers.userController.getUser);
+
 // Airport
 router.get("/api/v1/airport", controllers.airportController.getAirports);
 router.get("/api/v1/airport/:id", controllers.airportController.getAirport);
