@@ -7,8 +7,8 @@ const middlewares = require("../app/middlewares");
 const router = express.Router();
 
 // Swagger UI Documentation
-router.use("/api-docs", swaggerUi.serve);
-router.get("/api-docs", swaggerUi.setup(swaggerDocument));
+router.use("/", swaggerUi.serve);
+router.get("/", swaggerUi.setup(swaggerDocument));
 
 // Auth
 router.post("/api/v1/register", controllers.authController.register);
