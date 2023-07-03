@@ -159,9 +159,9 @@ const addPayment = async (req) => {
   try {
     const { booking_code } = req.params;
     const { payment_method } = req.body;
-    const { email, name } = req.user;
+    const { id, email, name } = req.user;
 
-    const transaction = await transactionRepository.updateTransactionByBookingCode(booking_code, { 
+    await transactionRepository.updateTransactionByBookingCode(booking_code, { 
       payment_method
     });
 
@@ -173,24 +173,22 @@ const addPayment = async (req) => {
 
     // Send payment success to email
     return await mailService.sendMail(email, "Konfirmasi Pembayaran Diterima",
-    `
-      <div style="font-size: 14px;">
-        <span>Hai ${name},</span> <br /> <br />
-        <span>
-          Terima kasih telah melakukan konfirmasi pembayaran. Pembayaran kamu telah kami <strong>Terima</strong>.
-        </span>
-        <ul style="padding-left: 8px;">
-          <li>Nama Pemesan: ${name}</li>
-          <li>Booking Code: ${booking_code}</li>
-          <li>Metode Pembayaran: ${payment_method}</li>
-        </ul>
-        <span>Terima kasih,</span> <br />
-        <span>Tim Shinzou</span>
-      </div>
-    `
-  );
-    
-    return transaction;
+      `
+        <div style="font-size: 14px;">
+          <span>Hai ${name},</span> <br /> <br />
+          <span>
+            Terima kasih telah melakukan konfirmasi pembayaran. Pembayaran kamu telah kami <strong>Terima</strong>.
+          </span>
+          <ul style="padding-left: 8px;">
+            <li>Nama Pemesan: ${name}</li>
+            <li>Booking Code: ${booking_code}</li>
+            <li>Metode Pembayaran: ${payment_method}</li>
+          </ul>
+          <span>Terima kasih,</span> <br />
+          <span>Tim Shinzou</span>
+        </div>
+      `
+    );
   } catch (error) {
     if (error instanceof ApplicationError) {
       throw new ApplicationError(error.statusCode, error.message);
