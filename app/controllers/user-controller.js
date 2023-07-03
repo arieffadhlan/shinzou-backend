@@ -35,11 +35,18 @@ const getUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    await userService.updateUser(req);
+    const user = await userService.updateUser(req);
 
     res.status(200).json({
       status: "Success",
       message: "Data pengguna telah berhasil diperbarui.",
+      data: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone_number: user.phone_number,
+        token: user.token,
+      }
     });
   } catch (error) {
     res.status(error.statusCode || 400).json({

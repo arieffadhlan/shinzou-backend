@@ -38,18 +38,19 @@ const getUser = async (id) => {
 const updateUser = async (req) => {
   try {
     const { id } = req.params;
-    const { name, email, phone_number } = req.body;
+    const { name, phone_number } = req.body;
 
-    if (!name || !email || !phone_number) {
-      throw new ApplicationError(404, "nama, email, dan nomor telepon wajib diisi.");
+    if (!name || !phone_number) {
+      throw new ApplicationError(404, "nama dan nomor telepon wajib diisi.");
     }
 
     const user = await getUser(id);
-    return await userRepository.updateUser(user.id, {
+    await userRepository.updateUser(user.id, {
       name,
-      email,
       phone_number
     });
+
+    return user;
   } catch (error) {
     if (error instanceof ApplicationError) {
       throw new ApplicationError(error.statusCode, error.message);
