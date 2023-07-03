@@ -16,6 +16,23 @@ const getNotifications = async (req, res) => {
   }
 }
 
+const markAsRead = async (req, res) => {
+  try {
+    await notificationService.markAsRead(req);
+
+    res.status(200).json({
+      status: "Success",
+      message: "Data notifikasi telah berhasil diperbarui."
+    });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({
+      status: "Error",
+      message: error.message
+    });
+  }
+}
+
 module.exports = {
-  getNotifications
+  getNotifications,
+  markAsRead
 }

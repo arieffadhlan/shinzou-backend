@@ -55,5 +55,6 @@ router.put("/api/v1/transaction/:booking_code", middlewares.authorize, controlle
 
 // Notification
 router.get("/api/v1/notification", middlewares.authorize, controllers.notificationController.getNotifications);
+router.put("/api/v1/notification", middlewares.authorize, controllers.notificationController.markAsRead);
 
 module.exports = router;

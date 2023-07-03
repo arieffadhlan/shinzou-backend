@@ -18,6 +18,23 @@ const getNotifications = async () => {
   }
 }
 
+const markAsRead = async (req) => {
+  try {
+    const { id } = req.params;
+
+    await notificationRepository.markAsRead({
+      mark_as_read: true
+    });
+  } catch (error) {
+    if (error instanceof ApplicationError) {
+      throw new ApplicationError(error.statusCode, error.message);
+    } else {
+      throw new Error(error.message);
+    }
+  }
+}
+
 module.exports = {
-  getNotifications
+  getNotifications,
+  markAsRead
 }

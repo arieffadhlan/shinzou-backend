@@ -18,6 +18,14 @@ const updateNotification = (id, data) => {
   });
 }
 
+const markAsRead = (data) => {
+  return Notification.update(data, { 
+    where: {
+      mark_as_read: false
+    } 
+  });
+}
+
 const deleteNotification = (id) => {
   return Notification.destroy({ where: { id } });
 }
@@ -27,5 +35,6 @@ module.exports = {
   getNotification,
   addNotification,
   updateNotification,
+  markAsRead,
   deleteNotification
 }
