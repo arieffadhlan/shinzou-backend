@@ -17,10 +17,16 @@ module.exports = (sequelize, DataTypes) => {
         as: "airline"
       });
       this.hasMany(models.Transaction, { 
-        foreignKey: "flight_id",
+        foreignKey: "departure_flight_id",
+        as: "departureFlightTransactions"
+      });
+      this.hasMany(models.Transaction, { 
+        foreignKey: "return_flight_id",
+        as: "returnFlightTransactions"
       });
       this.hasMany(models.Seat, { 
         foreignKey: "flight_id",
+        as: "seats"
       });
     }
   }
@@ -52,8 +58,11 @@ module.exports = (sequelize, DataTypes) => {
         key: "id"
       }
     },
-    departure_datetime: DataTypes.DATE,
-    arrival_datetime: DataTypes.DATE,
+    flight_number: DataTypes.STRING,
+    departure_date: DataTypes.DATEONLY,
+    departure_time: DataTypes.TIME,
+    arrival_date: DataTypes.DATEONLY,
+    arrival_time: DataTypes.TIME,
     capacity: DataTypes.INTEGER,
     description: DataTypes.TEXT,
     class: DataTypes.STRING,

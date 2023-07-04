@@ -2,19 +2,23 @@
 const { Model } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
 module.exports = (sequelize, DataTypes) => {
-  class Passanger extends Model {
+  class Ticket extends Model {
     static associate(models) {
-      this.hasMany(models.Transaction, { 
+      this.belongsTo(models.Transaction, {
         foreignKey: "transaction_id",
-        as: "transactions"
+        as: "transaction"
       });
-      this.hasOne(models.Seat, { 
+      this.belongsTo(models.Passenger, {
+        foreignKey: "passenger_id",
+        as: "passenger"
+      });
+      this.belongsTo(models.Seat, {
         foreignKey: "seat_id",
         as: "seat"
       });
     }
   }
-  Passanger.init({
+  Ticket.init({
     id: {
       allowNull: false,
       primaryKey: true,
@@ -28,6 +32,13 @@ module.exports = (sequelize, DataTypes) => {
         key: "id"
       }
     },
+    passenger_id: {
+      type: DataTypes.UUID,
+      references: {
+        model: "Passenger",
+        key: "id"
+      }
+    },
     seat_id: {
       type: DataTypes.INTEGER,
       references: {
@@ -35,14 +46,10 @@ module.exports = (sequelize, DataTypes) => {
         key: "id"
       }
     },
-    title: DataTypes.STRING,
-    name: DataTypes.STRING,
-    family_name: DataTypes.STRING,
-    phone_number: DataTypes.STRING
   }, {
     sequelize,
-    modelName: "Passanger",
+    modelName: "Ticket",
   });
-  Passanger.beforeCreate((passanger) => passanger.id = uuidv4());
-  return Passanger;
+  Ticket.beforeCreate((Ticket) => Ticket.id = uuidv4());
+  return Ticket;
 };

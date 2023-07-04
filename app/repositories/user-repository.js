@@ -1,5 +1,9 @@
 const { User } = require("../models");
 
+const getUsers = () => {
+  return User.findAll();
+}
+
 const getUser = (id) => {
   return User.findByPk(id);
 }
@@ -26,13 +30,14 @@ const createUser = (data) => {
   return User.create(data);
 }
 
-const updateUser = (id, args) => {
-  return User.update(args, {
+const updateUser = (id, data) => {
+  return User.update(data, {
     where: { id }
   });
 }
 
 module.exports = {
+  getUsers,
   getUser,
   getUserByEmail,
   getUserByOTP,

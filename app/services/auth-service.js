@@ -126,8 +126,10 @@ const login = async (req) => {
       email: user.email,
       phone_number: user.phone_number
     });
+
+    user.token = token;
   
-    return { token };  
+    return user;  
   } catch (error) {
     if (error instanceof ApplicationError) {
       throw new ApplicationError(error.statusCode, error.message);

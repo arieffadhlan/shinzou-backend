@@ -40,7 +40,13 @@ const login = async (req, res) => {
     res.status(201).json({
       status: "Success",
       message: "Login telah berhasil.",
-      token: user.token
+      data: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone_number: user.phone_number,
+        token: user.token,
+      }
     });
   } catch (error) {
     res.status(error.statusCode || 400).json({

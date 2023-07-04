@@ -42,17 +42,23 @@ const getFlight = async (id) => {
 
 const searchFlight = async (req) => {
   try {
-    const { location_from, location_to, departure_datetime, passangers, seat_class } = req.query
+    const { 
+      location_from, 
+      location_to, 
+      departure_date,
+      passengers, 
+      seat_class 
+    } = req.query
 
     const originAirport = await airportRepository.getAirportByName(location_from);
     const destinationAirport = await airportRepository.getAirportByName(location_to);
     
     const flights = await flightRepository.searchFlight({
-      location_from: originAirport.id,
-      location_to: destinationAirport.id,
-      departure_datetime: new Date(departure_datetime),
-      passangers: parseInt(passangers),
-      seat_class
+      origin_airport_id: originAirport.id,
+      destination_airport_id: destinationAirport.id,
+      departure_date,
+      capacity: parseInt(passengers),
+      class: seat_class
     });
 
     return flights;

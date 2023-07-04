@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const { Airline, Airport, Flight } = require("../models");
+const { Airline, Airport, Flight, Seat } = require("../models");
 
 const getFlights = () => {
   return Flight.findAll({
@@ -15,6 +15,10 @@ const getFlights = () => {
       {
         model: Airline,
         as: "airline"
+      },
+      {
+        model: Seat,
+        as: "seats"
       },
     ]
   });
@@ -35,6 +39,10 @@ const getFlight = (id) => {
         model: Airline,
         as: "airline"
       },
+      {
+        model: Seat,
+        as: "seats"
+      },
     ]
   });
 }
@@ -42,13 +50,10 @@ const getFlight = (id) => {
 const searchFlight = (data) => {
   return Flight.findAll({
     where: {
-      origin_airport_id: data.location_from,
-      destination_airport_id: data.location_to,
-      departure_datetime: data.departure_datetime,
+      ...data,
       capacity: {
-        [Op.gte]: data.passangers, 
+        [Op.gte]: data.capacity, 
       },
-      class: data.seat_class
     },
     include: [
       {
@@ -62,6 +67,10 @@ const searchFlight = (data) => {
       {
         model: Airline,
         as: "airline"
+      },
+      {
+        model: Seat,
+        as: "seats"
       },
     ]
   });

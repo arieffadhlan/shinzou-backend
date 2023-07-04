@@ -32,13 +32,25 @@ module.exports = {
           key: "id"
         }
       },
-      departure_datetime: {
+      flight_number: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.STRING
       },
-      arrival_datetime: {
+      departure_date: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
+      },
+      departure_time: {
+        allowNull: false,
+        type: Sequelize.TIME
+      },
+      arrival_date: {
+        allowNull: false,
+        type: Sequelize.DATEONLY
+      },
+      arrival_time: {
+        allowNull: false,
+        type: Sequelize.TIME
       },
       capacity: {
         allowNull: false,
