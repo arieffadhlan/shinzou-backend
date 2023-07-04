@@ -11,6 +11,7 @@ const {
 
 const getTransactions = () => {
   return Transaction.findAll({
+    order: [["createdAt", "DESC"]],
     include: [
       {
         model: Flight,
