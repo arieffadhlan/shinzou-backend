@@ -18,11 +18,12 @@ const getNotifications = async (req, res) => {
 
 const markAsRead = async (req, res) => {
   try {
-    await notificationService.markAsRead(req);
+    const notifications = await notificationService.markAsRead();
 
     res.status(200).json({
       status: "Success",
-      message: "Data notifikasi telah berhasil diperbarui."
+      message: "Data notifikasi telah berhasil diperbarui.",
+      data: notifications
     });
   } catch (error) {
     res.status(error.statusCode || 400).json({

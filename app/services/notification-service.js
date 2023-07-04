@@ -18,13 +18,15 @@ const getNotifications = async () => {
   }
 }
 
-const markAsRead = async (req) => {
+const markAsRead = async () => {
   try {
-    const { id } = req.params;
-
     await notificationRepository.markAsRead({
       mark_as_read: true
     });
+
+    const notifications = await getNotifications();
+    
+    return notifications
   } catch (error) {
     if (error instanceof ApplicationError) {
       throw new ApplicationError(error.statusCode, error.message);
