@@ -44,9 +44,12 @@ const generateFlights = (length) => {
         const randomAirlines = Math.floor(Math.random() * 7);
         const randomClass = Math.floor(Math.random() * classes.length);
         const randomPrice = Math.floor(Math.random() * prices.length);
-        const departure_flight = generateFlightDate(new Date(), new Date("2023/12/31"));
-        const return_flight = generateFlightDate(departure_flight.departure, new Date("2023/12/31"));
         const flightNumber = generateFlightNumber(airlines[randomAirlines].airline_code);
+        let departureFlight = generateFlightDate(new Date(), new Date("2023/12/31"));
+
+        if (i > j) {
+          departureFlight = generateFlightDate(departureFlight.departure, new Date("2023/12/31"));
+        }
         
         const flight = {
           id: uuidv4(),
@@ -54,10 +57,10 @@ const generateFlights = (length) => {
           destination_airport_id: j,
           airline_id: airlines[randomAirlines].id,
           flight_number: flightNumber,
-          departure_date: dayjs(departure_flight.departure).format("YYYY-MM-DD"),
-          departure_time: dayjs(departure_flight.departure).format("HH:mm:ss.sssZ"),
-          arrival_date: dayjs(departure_flight.arrival).format("YYYY-MM-DD"),
-          arrival_time: dayjs(departure_flight.arrival).format("HH:mm:ss.sssZ"),
+          departure_date: dayjs(departureFlight.departure).format("YYYY-MM-DD"),
+          departure_time: dayjs(departureFlight.departure).format("HH:mm:ss.sssZ"),
+          arrival_date: dayjs(departureFlight.arrival).format("YYYY-MM-DD"),
+          arrival_time: dayjs(departureFlight.arrival).format("HH:mm:ss.sssZ"),
           capacity: 72,
           description: "In Flight Entertainment",
           class: classes[randomClass],
