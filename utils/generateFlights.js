@@ -70,30 +70,18 @@ const generateFlights = (length) => {
         };
 
         flights.push(flight);
-        flights.push({
-          ...flight,
-          id: uuidv4(),
-          flight_number: generateFlightNumber(airlines[randomAirlines].airline_code),
-          price: prices[Math.floor(Math.random() * prices.length)]
-        });
-        flights.push({
-          ...flight,
-          id: uuidv4(),
-          flight_number: generateFlightNumber(airlines[randomAirlines].airline_code),
-          price: prices[Math.floor(Math.random() * prices.length)]
-        });
-        flights.push({
-          ...flight,
-          id: uuidv4(),
-          flight_number: generateFlightNumber(airlines[randomAirlines].airline_code),
-          price: prices[Math.floor(Math.random() * prices.length)]
-        });
-        flights.push({
-          ...flight,
-          id: uuidv4(),
-          flight_number: generateFlightNumber(airlines[randomAirlines].airline_code),
-          price: prices[Math.floor(Math.random() * prices.length)]
-        });
+
+        for (let k = 0; k < 4; k++) {
+          flights.push({
+            ...flight,
+            id: uuidv4(),
+            flight_number: generateFlightNumber(airlines[randomAirlines].airline_code),
+            departure_time: dayjs(addHours(departureFlight.departure, Math.floor(Math.random() * 7) + 1)).format("HH:mm:ss.sssZ"),
+            arrival_date: dayjs(addHours(departureFlight.arrival, Math.floor(Math.random() * 7) + 1)).format("YYYY-MM-DD"),
+            arrival_time: dayjs(addHours(departureFlight.arrival, Math.floor(Math.random() * 7) + 1)).format("HH:mm:ss.sssZ"),
+            price: prices[Math.floor(Math.random() * prices.length)]
+          });
+        }
       }
     }
   }
