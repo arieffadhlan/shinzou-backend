@@ -28,7 +28,15 @@
     },
     {
       "name": "Transaction",
-      "description": "transaction data"
+      "description": "transaction data."
+    },
+    {
+      "name": "User",
+      "description": "User data."
+    },
+    {
+      "name": "Notification",
+      "description": "Notification part."
     }
   ],
   "paths": {
@@ -90,6 +98,23 @@
                           "type": "string",
                           "example": "$2a$10$HcB6rrcnFLrhOFdHvsGfXumJbn.AQVPeqfFlVtYoO5MNzHl0/ISVO"
                         },
+                        "otp": {
+                          "type": "string",
+                          "example": "818096"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2023-06-21T02:13:55.014Z"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2023-06-21T02:13:55.014Z"
+                        },
+                        "token": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "da2b4450-d97a-4d9d-97cf-b657f15a0ea2"
+                        },
                         "is_verified": {
                           "type": "boolean",
                           "example": false
@@ -97,23 +122,6 @@
                         "role": {
                           "type": "string",
                           "example": "User"
-                        },
-                        "otp": {
-                          "type": "string",
-                          "example": "818096"
-                        },
-                        "token": {
-                          "type": "string",
-                          "format": "uuid",
-                          "example": "da2b4450-d97a-4d9d-97cf-b657f15a0ea2"
-                        },
-                        "createdAt": {
-                          "type": "string",
-                          "example": "2023-06-21T02:13:55.014Z"
-                        },
-                        "updatedAt": {
-                          "type": "string",
-                          "example": "2023-06-21T02:13:55.014Z"
                         }
                       }
                     }
@@ -260,9 +268,31 @@
                       "type": "string",
                       "example": "Login telah berhasil."
                     },
-                    "token": {
-                      "type": "string",
-                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFmMGQ0NDAzLTllZGUtNDAwOS1hNWEyLTIyMGIwNTk3MDI0YiIsIm5hbWUiOiJNdWhhbW1hZCBBcmllZiBGYWRobGFuIiwiZW1haWwiOiJhcmlmZmFkaGxhbjEyQGdtYWlsLmNvbSIsInBob25lX251bWJlciI6IjA4MTIzNDU2Nzg5IiwiaWF0IjoxNjg3MzE2MTAxLCJleHAiOjE2ODc0MDI1MDF9.m49pEKBz5f5d9eNLJ_hy5nQQR1yBkSKGWFFrKrq1q2I"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "a0c54091-caa2-46a2-89df-aefe969f3226"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "John Doe"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "johnstrauber@gmail.com"
+                        },
+                        "phone_number": {
+                          "type": "string",
+                          "example": 82147532491
+                        },
+                        "token": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEwYzU0MDkxLWNhYTItNDZhMi04OWRmLWFlZmU5NjlmMzIyNiIsIm5hbWUiOiJKb2huIFN0cmF1YmVyIiwiZW1haWwiOiJqb2huc3RyYXViZXJAZ21haWwuY29tIiwicGhvbmVfbnVtYmVyIjoiMDgyMTQ3NTMyNDkxIiwiaWF0IjoxNjg4MzcwODIyLCJleHAiOjE2ODg0NTcyMjJ9.GTAfxc0F74GgWmi80ToLzHwaSVJPWQ0nSRr-C81uiXk"
+                        }
+                      }
                     }
                   }
                 }
@@ -411,7 +441,7 @@
           {
             "name": "token",
             "in": "path",
-            "description": "Token of the user who wants to reset the password.",
+            "description": "Token of the user who wants to reset the password (can be found when registration).",
             "required": true,
             "schema": {
               "type": "string"
@@ -519,35 +549,38 @@
                       "example": "Success"
                     },
                     "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "airport_code": {
-                          "type": "string",
-                          "example": "BTJ"
-                        },
-                        "airport_name": {
-                          "type": "string",
-                          "example": "Sultan Iskandar Muda International"
-                        },
-                        "location": {
-                          "type": "string",
-                          "example": "Banda Aceh"
-                        },
-                        "location_acronym": {
-                          "type": "string",
-                          "example": "BNA"
-                        },
-                        "createdAt": {
-                          "type": "string",
-                          "example": "2023-06-27T06:15:21.444Z"
-                        },
-                        "updatedAt": {
-                          "type": "string",
-                          "example": "2023-06-27T06:15:21.444Z"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "airport_code": {
+                            "type": "string",
+                            "example": "BTJ"
+                          },
+                          "airport_name": {
+                            "type": "string",
+                            "example": "Sultan Iskandar Muda International"
+                          },
+                          "location": {
+                            "type": "string",
+                            "example": "Banda Aceh"
+                          },
+                          "location_acronym": {
+                            "type": "string",
+                            "example": "BNA"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2023-06-27T06:15:21.444Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2023-06-27T06:15:21.444Z"
+                          }
                         }
                       }
                     }
@@ -585,7 +618,7 @@
         "tags": [
           "Airport"
         ],
-        "summary": "add airports data.",
+        "summary": "Add airports data.",
         "description": "Add new airports data to database",
         "requestBody": {
           "description": "Required fields (airport_code, airport_name, location, location_acronym)",
@@ -675,7 +708,7 @@
               }
             }
           },
-          "412": {
+          "422": {
             "description": "Empty fields (airport_code, airport_name, location, location_acronym)",
             "content": {
               "application/json": {
@@ -866,7 +899,7 @@
               }
             }
           },
-          "412": {
+          "422": {
             "description": "Empty fields (airport_code, airport_name, location, location_acronym)",
             "content": {
               "application/json": {
@@ -975,31 +1008,34 @@
                       "example": "Success"
                     },
                     "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "airline_code": {
-                          "type": "string",
-                          "example": "ID"
-                        },
-                        "airline_name": {
-                          "type": "string",
-                          "example": "Batik Air"
-                        },
-                        "airline_image": {
-                          "type": "string",
-                          "example": "https://seeklogo.com/images/B/batik-air-logo-EDCC357AB3-seeklogo.com.png"
-                        },
-                        "createdAt": {
-                          "type": "string",
-                          "example": "2023-06-27T06:15:21.458Z"
-                        },
-                        "updatedAt": {
-                          "type": "string",
-                          "example": "2023-06-27T06:15:21.458Z"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "airline_code": {
+                            "type": "string",
+                            "example": "ID"
+                          },
+                          "airline_name": {
+                            "type": "string",
+                            "example": "Batik Air"
+                          },
+                          "airline_image": {
+                            "type": "string",
+                            "example": "https://seeklogo.com/images/B/batik-air-logo-EDCC357AB3-seeklogo.com.png"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2023-06-27T06:15:21.458Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2023-06-27T06:15:21.458Z"
+                          }
                         }
                       }
                     }
@@ -1037,7 +1073,7 @@
         "tags": [
           "Airline"
         ],
-        "summary": "add airline data.",
+        "summary": "Add airline data.",
         "description": "Add new airline data to database",
         "requestBody": {
           "description": "Required fields (airline_code, airline_name, airline_name)",
@@ -1123,7 +1159,7 @@
               }
             }
           },
-          "412": {
+          "422": {
             "description": "Empty fields (airline_code, airline_name, airline_image)",
             "content": {
               "application/json": {
@@ -1310,7 +1346,7 @@
               }
             }
           },
-          "412": {
+          "422": {
             "description": "Empty fields (airline_code, airline_name, airline_image)",
             "content": {
               "application/json": {
@@ -1418,7 +1454,7 @@
             }
           },
           "400": {
-            "description": "Check the data is valid and must be filled in.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -1430,7 +1466,7 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "error.message"
+                      "example": "Required authorization"
                     }
                   }
                 }
@@ -1566,7 +1602,7 @@
               }
             }
           },
-          "412": {
+          "422": {
             "description": "Empty fields",
             "content": {
               "application/json": {
@@ -2001,7 +2037,7 @@
               }
             }
           },
-          "412": {
+          "422": {
             "description": "Empty fields",
             "content": {
               "application/json": {
@@ -2057,7 +2093,7 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Delete flights data successfully"
+                      "example": "Data pesawat telah berhasil dihapus"
                     }
                   }
                 }
@@ -2358,7 +2394,7 @@
             }
           },
           "400": {
-            "description": "Check the data is valid and must be filled in.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -2370,7 +2406,7 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "error.message"
+                      "example": "Required authorization"
                     }
                   }
                 }
@@ -2383,7 +2419,7 @@
         "tags": [
           "Transaction"
         ],
-        "summary": "add transaction data.",
+        "summary": "Add transaction data.",
         "description": "Add new transaction data to database",
         "requestBody": {
           "description": "Required fields (all fields)",
@@ -2679,7 +2715,7 @@
               }
             }
           },
-          "412": {
+          "422": {
             "description": "Empty fields",
             "content": {
               "application/json": {
@@ -3013,7 +3049,7 @@
           "Transaction"
         ],
         "summary": "Add payment Method",
-        "description": "Add Pqyment Method to transaction data",
+        "description": "Add Payment Method to transaction data",
         "requestBody": {
           "description": "add payment_method to transaction data",
           "required": true,
@@ -3080,6 +3116,485 @@
                     "value": {
                       "status": "Error",
                       "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get All User Data.",
+        "description": "Get All User Data.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "73d67b8b-24e8-459b-96c3-32eb78e30c53"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "User1"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "user@mail.com"
+                          },
+                          "phone_number": {
+                            "type": "integer",
+                            "example": "087162839"
+                          },
+                          "password": {
+                            "type": "string",
+                            "example": "$2a$10$zCaxvs7kyn.ZJTdV75FNxeEZoZFb2odX41FDD2sJj3Csg.SRdRKXy"
+                          },
+                          "is_verified": {
+                            "type": "boolean",
+                            "example": true
+                          },
+                          "role": {
+                            "type": "string",
+                            "example": "user"
+                          },
+                          "otp": {
+                            "type": "integer",
+                            "example": 127824
+                          },
+                          "token": {
+                            "type": "string",
+                            "example": "59d3e7fe-ca89-4fba-a8f5-53abc0448345"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2023-06-21T02:13:55.014Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2023-06-21T02:13:55.014Z"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get user data by id.",
+        "description": "Return user data by id.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the user to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "73d67b8b-24e8-459b-96c3-32eb78e30c53"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "User1"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "user@mail.com"
+                    },
+                    "phone_number": {
+                      "type": "integer",
+                      "example": "087162839"
+                    },
+                    "password": {
+                      "type": "string",
+                      "example": "$2a$10$zCaxvs7kyn.ZJTdV75FNxeEZoZFb2odX41FDD2sJj3Csg.SRdRKXy"
+                    },
+                    "is_verified": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "role": {
+                      "type": "string",
+                      "example": "user"
+                    },
+                    "otp": {
+                      "type": "integer",
+                      "example": 127824
+                    },
+                    "token": {
+                      "type": "string",
+                      "example": "59d3e7fe-ca89-4fba-a8f5-53abc0448345"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Pengguna Tidak Ditemukan"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Edit User data by id.",
+        "description": "Modify User data by id.",
+        "requestBody": {
+          "description": "Allowed fields to update (name, phone_number)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Rendy"
+                  },
+                  "phone_number": {
+                    "type": "integer",
+                    "example": "087162839"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the user to edit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Data pengguna telah berhasil diperbarui"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "95231057-c40f-4369-9877-6060d4c51f7e"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Rendy"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "rendy@mail.com"
+                        },
+                        "phone_number": {
+                          "type": "string",
+                          "example": 87162839
+                        },
+                        "token": {
+                          "type": "string",
+                          "example": "c1a7de92-e03d-41a3-a2dc-460615cdc3fe"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Empty fields (nama, nomor_telepon)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Empty Field",
+                    "value": {
+                      "status": "Error",
+                      "message": "nama dan nomor telepon wajib diisi"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notification": {
+      "get": {
+        "tags": [
+          "Notification"
+        ],
+        "summary": "Get All Notification.",
+        "description": "Get All Notification.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "user_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "95231057-c40f-4369-9877-6060d4c51f7e"
+                          },
+                          "message": {
+                            "type": "string",
+                            "example": "Anda telah melakukan pemesanan tiket, silakan selesaikan pembayaran sekarang juga!"
+                          },
+                          "mark_as_read": {
+                            "type": "boolean",
+                            "example": false
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2023-06-21T02:13:55.014Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2023-06-21T02:13:55.014Z"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notification/mark-as-read": {
+      "get": {
+        "tags": [
+          "Notification"
+        ],
+        "summary": "Status mark-as-read for notification.",
+        "description": "mark-as-read status for notification",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "user_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "95231057-c40f-4369-9877-6060d4c51f7e"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Anda telah melakukan pemesanan tiket, silakan selesaikan pembayaran sekarang         juga!"
+                    },
+                    "mark_as_read": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2023-06-21T02:13:55.014Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Required authorization"
                     }
                   }
                 }
