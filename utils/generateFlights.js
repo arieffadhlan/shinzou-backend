@@ -70,6 +70,30 @@ const generateFlights = (length) => {
         };
 
         flights.push(flight);
+        flights.push({
+          ...flight,
+          id: uuidv4(),
+          flight_number: generateFlightNumber(airlines[randomAirlines].airline_code),
+          price: prices[Math.floor(Math.random() * prices.length)]
+        });
+        flights.push({
+          ...flight,
+          id: uuidv4(),
+          flight_number: generateFlightNumber(airlines[randomAirlines].airline_code),
+          price: prices[Math.floor(Math.random() * prices.length)]
+        });
+        flights.push({
+          ...flight,
+          id: uuidv4(),
+          flight_number: generateFlightNumber(airlines[randomAirlines].airline_code),
+          price: prices[Math.floor(Math.random() * prices.length)]
+        });
+        flights.push({
+          ...flight,
+          id: uuidv4(),
+          flight_number: generateFlightNumber(airlines[randomAirlines].airline_code),
+          price: prices[Math.floor(Math.random() * prices.length)]
+        });
       }
     }
   }
