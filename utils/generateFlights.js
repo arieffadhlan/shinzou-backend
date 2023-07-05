@@ -63,7 +63,7 @@ const generateFlights = (length) => {
           arrival_time: dayjs(departureFlight.arrival).format("HH:mm:ss.sssZ"),
           capacity: 72,
           description: "In Flight Entertainment",
-          class: classes[randomClass],
+          class: classes[1],
           price: prices[randomPrice],
           createdAt: new Date(),
           updatedAt: new Date(),
