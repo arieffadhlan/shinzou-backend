@@ -50,7 +50,9 @@ const updateUser = async (req) => {
       phone_number
     });
 
-    return user;
+    const updatedUser = await getUser(id);
+
+    return updatedUser;
   } catch (error) {
     if (error instanceof ApplicationError) {
       throw new ApplicationError(error.statusCode, error.message);
