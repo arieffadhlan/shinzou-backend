@@ -103,6 +103,44 @@ const verifyOTP = async (req) => {
   }
 }
 
+const resendOTP = async (id) => {
+  try {  
+    const user = await userRepository.getUser(id);
+    if (!user) {
+      throw new ApplicationError(404, "Pengguna tidak ditemukan.");
+    }
+
+    const newOTP = generateOTP();
+    await userRepository.updateUser(user.id, {
+      otp: newOTP,
+    }); 
+  
+    // Send otp to email
+    await mailService.sendMail(user.email, "Verifikasi Akun",
+      `
+        <div style="font-size: 14px;">
+          <span>Hai ${user.name},</span> <br /> <br />
+          <span>
+            Terima kasih telah memilih <strong>Shinzou</strong>. 
+            Sebelum lanjut, Anda harus verifikasi akun terlebih dahulu. Untuk menyelesaikan tahap registrasi, silakan masukkan kode OTP di bawah ini:
+          </span>
+          <br /> <br />
+          <span>Kode OTP: <strong>${newOTP}</strong></span> <br /> <br />
+          <span>Jika Anda tidak membuat akun, maka Anda tidak perlu melakukan apapun dan silakan abaikan email ini.</span> <br /> <br />
+          <span>Terima kasih,</span> <br />
+          <span>Tim Shinzou</span>
+        </div>
+      `
+    );
+  } catch (error) {
+    if (error instanceof ApplicationError) {
+      throw new ApplicationError(error.statusCode, error.message);
+    } else {
+      throw new Error(error.message);
+    }
+  }
+}
+
 const login = async (req) => {
   try {
     const { email, password } = req.body;
@@ -204,6 +242,7 @@ const resetPassword = async (req) => {
 module.exports = {
   register,
   verifyOTP,
+  resendOTP,
   login,
   forgotPassword,
   resetPassword

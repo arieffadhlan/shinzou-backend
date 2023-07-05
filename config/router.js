@@ -12,8 +12,9 @@ router.get("/", swaggerUi.setup(swaggerDocument));
 
 // Auth
 router.post("/api/v1/register", controllers.authController.register);
-router.post("/api/v1/login", controllers.authController.login);
 router.post("/api/v1/verify", controllers.authController.verifyOTP);
+router.post("/api/v1/resend-otp/:id", controllers.authController.resendOTP);
+router.post("/api/v1/login", controllers.authController.login);
 router.post("/api/v1/forgot-password", controllers.authController.forgotPassword);
 router.post("/api/v1/reset-password/:token", controllers.authController.resetPassword);
 
