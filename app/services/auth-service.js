@@ -152,6 +152,10 @@ const login = async (req) => {
     if (!user) {
       throw new ApplicationError(401, "Identitas tersebut tidak sesuai dengan data kami.");
     }
+    
+    if (!user.is_verified) {
+      throw new ApplicationError(401, "Identitas tersebut tidak sesuai dengan data kami.");
+    }
   
     const isPasswordCorrect = checkPassword(password, user.password);
     if (!isPasswordCorrect) {

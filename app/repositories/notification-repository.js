@@ -1,7 +1,9 @@
 const { Notification } = require("../models");
 
 const getNotifications = () => {
-  return Notification.findAll();
+  return Notification.findAll({
+    order: [["createdAt", "DESC"]]
+  });
 }
 
 const getNotification = (id) => {
