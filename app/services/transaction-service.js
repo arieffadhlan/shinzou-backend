@@ -183,32 +183,32 @@ const printTicket = async (req) => {
 
     // Send ticket to email
     if (transaction.return_flight_id) {
-      await mailService.sendMail(user.email, "Flight Ticket",
+      await mailService.sendMail(user.email, "Ticket Penerbangan",
         `
           <div style=" display: block; max-width: 900px;margin-left: 15%; margin-right: 15%;">
             <div style="text-align: left; margin: 0 auto; max-width: 600px;">
               <h1 style="font-size: 20px; margin-top: 20px; text-align: center;">Your e-ticket is here!</h1>
               <div style="font-size: 14px; text-align: start">
                 <h1 style="font-size: 14px;">
-                  Booking Code: <br> 
+                  Kode Booking: <br> 
                   ${transaction.booking_code}
                 </h1>
                 <span>
-                  Name: ${user.name}<br>
-                  Phone Number: ${user.phone_number}<br>
+                  Nama: ${user.name}<br>
+                  Nomor Telepon: ${user.phone_number}<br>
                   Email: ${user.email}
                 </span>
               </div>
 
               <div style="margin-top: 20px; margin-buttom:0px;  color:#082f49; font-size:16px;">
-                <p style="font-weight: 700">Departure Flight</p>
+                <p style="font-weight: 700">Penerbangan Pergi</p>
               </div>
               <table  style="text-align: center; width:100%; border: 5px; cellpadding: 0; cellspacing:0; margin-left: auto; margin-right: auto; border-collapse: collapse; ">
                 <tr class="font" align="center" valign="top"  style="padding: 36px 24px; font-weight:700; padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px; background-color: #d1cece; border-bottom: 3px solid #edebeb; text-align: start; ">
-                  <td style="padding: 10px;">Airline</td>
-                  <td style="padding: 10px;">Type</td>
-                  <td style="padding: 10px;">Departure</td>
-                  <td style="padding: 10px;">Arrival</td>
+                  <td style="padding: 10px;">Pesawat</td>
+                  <td style="padding: 10px;">Tipe</td>
+                  <td style="padding: 10px;">Kepergian</td>
+                  <td style="padding: 10px;">Kepulangan</td>
                 </tr>
                 <tr  style="padding:1rem; font-weight:200; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px;background-color: #eae8e8; text-align: start; ">
                   <td style="padding: 10px;">${transaction.departureFlight.airline.airline_name} <br> (${transaction.departureFlight.airline.airline_code})</</td>
@@ -219,15 +219,15 @@ const printTicket = async (req) => {
               </table>
 
               <div style="margin-top: 0px;  color:#082f49; font-size:16px;">
-                <p style="font-weight: 700">Passangers</p>
+                <p style="font-weight: 700">Penumpang</p>
               </div>
               <div style="text-align: center; widht:100%;">
                 <table style="text-align: center; width:100%; border: 1px ; cellpadding: 0; cellspacing:0; margin-left: auto; margin-right: auto; border-collapse: collapse; margin-top:1rem;">
                   <tr style="padding: 36px 24px; font-weight:700; padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px; background-color: #d1cece; border-bottom: 3px solid #edebeb; text-align: start; ">
                     <td style="padding: 10px;">No</td>
-                    <td style="padding: 10px;">Passanger</td>
-                    <td style="padding: 10px;">Identity</td>
-                    <td style="padding: 10px;">Seat</td>
+                    <td style="padding: 10px;">Nama</td>
+                    <td style="padding: 10px;">No. Identitas</td>
+                    <td style="padding: 10px;">Tempat Duduk</td>
                   </tr>
                   ${(passengers).map((passenger, index) => {
                     return `
@@ -243,14 +243,14 @@ const printTicket = async (req) => {
               </div>
 
               <div style="margin-top: 10px; margin-buttom:0px;  color:#082f49; font-size:16px;">
-                <p style="font-weight: 700">Return Flight</p>
+                <p style="font-weight: 700">Penerbangan Pulang</p>
               </div>
               <table  style="text-align: center; width:100%; border: 5px; cellpadding: 0; cellspacing:0; margin-left: auto; margin-right: auto; border-collapse: collapse; ">
                 <tr class="font" align="center" valign="top"  style="padding: 36px 24px; font-weight:700; padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px; background-color: #d1cece; border-bottom: 3px solid #edebeb; text-align: start; ">
-                  <td style="padding: 10px;">Airline</td>
-                  <td style="padding: 10px;">Type</td>
-                  <td style="padding: 10px;">Departure</td>
-                  <td style="padding: 10px;">Arrival</td>
+                  <td style="padding: 10px;">Pesawat</td>
+                  <td style="padding: 10px;">Tipe</td>
+                  <td style="padding: 10px;">Kepergian</td>
+                  <td style="padding: 10px;">Kepulangan</td>
                 </tr>
                 <tr  style="padding:1rem; font-weight:200; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px;background-color: #eae8e8; text-align: start; ">
                   <td style="padding: 10px;">${transaction.returnFlight.airline.airline_name} <br> (${transaction.returnFlight.airline.airline_code})</</td>
@@ -261,15 +261,15 @@ const printTicket = async (req) => {
               </table>
 
               <div style="margin-top: 0px;  color:#082f49; font-size:16px;">
-                <p style="font-weight: 700">Passangers</p>
+                <p style="font-weight: 700">Penumpang</p>
               </div>
               <div style="widht:100%;">
                 <table style="text-align: center; width:100%; border: 1px ; cellpadding: 0; cellspacing:0; margin-left: auto; margin-right: auto; border-collapse: collapse; ">
                   <tr style="padding: 36px 24px; font-weight:700; padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px; background-color: #d1cece; border-bottom: 3px solid #edebeb; text-align: start; ">
-                    <th style="padding: 10px;">No</th>
-                    <th style="padding: 10px;">Passanger</th>
-                    <th style="padding: 10px;">Identity</th>
-                    <th style="padding: 10px;">Seat</th>
+                    <td style="padding: 10px;">No</td>
+                    <td style="padding: 10px;">Nama</td>
+                    <td style="padding: 10px;">No. Identitas</td>
+                    <td style="padding: 10px;">Tempat Duduk</td>
                   </tr>
                   ${(passengers).map((passenger, index) => {
                     return `
@@ -283,38 +283,38 @@ const printTicket = async (req) => {
                   }).join('')}
                 </table>
               </div>
-              <p>Thanks,<br> Shinzou Team</p>
+              <p>Terima kasih,<br> Tim Shinzou</p>
             </div> 
           </div>
         `
       );
     } else {
-      await mailService.sendMail(user.email, "Flight Ticket",
+      await mailService.sendMail(user.email, "Ticket Penerbangan",
         `
           <div style=" display: block; margin-left: 15%; margin-right: 15%;">
             <div style="text-align: left; margin: 0 auto;">
               <h1 style="font-size: 20px; margin-top: 20px; text-align: center;">Your e-ticket is here!</h1>
               <div style="font-size: 14px; text-align: start">
                 <h1 style="font-size: 14px;">
-                  Booking Code: <br> 
+                  Kode Booking: <br> 
                   ${transaction.booking_code}
                 </h1>
                 <span>
-                  Name: ${user.name}<br>
-                  Phone Number: ${user.phone_number}<br>
+                  Nama: ${user.name}<br>
+                  Nomor Telepon: ${user.phone_number}<br>
                   Email: ${user.email}
                 </span>
               </div>
                   
               <div style="margin-top: 20px; margin-buttom:0px;  color:#082f49; font-size:16px;">
-                <p style="font-weight: 700">Departure Flight</p>
+                <p style="font-weight: 700">Penerbangan Pergi</p>
               </div>
               <table  style="text-align: center; width:100%; border: 5px; cellpadding: 0; cellspacing:0; margin-left: auto; margin-right: auto; border-collapse: collapse; ">      
                 <tr class="font" align="center" valign="top"  style="padding: 36px 24px; font-weight:700; padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px; background-color: #d1cece; border-bottom: 3px solid #edebeb; text-align: start; ">
-                  <td style="padding: 10px;">Airline</td>
-                  <td style="padding: 10px;">Class</td>
-                  <td style="padding: 10px;">Departure</td>
-                  <td style="padding: 10px;">Arrival</td>
+                  <td style="padding: 10px;">Pesawat</td>
+                  <td style="padding: 10px;">Tipe</td>
+                  <td style="padding: 10px;">Kepergian</td>
+                  <td style="padding: 10px;">Kepulangan</td>
                 </tr>
                 <tr  style="padding:1rem; font-weight:200; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px;background-color: #eae8e8; text-align: start; ">
                   <td style="padding: 10px;">${transaction.departureFlight.airline.airline_name} <br> (${transaction.departureFlight.airline.airline_code})</</td>
@@ -337,9 +337,9 @@ const printTicket = async (req) => {
                 <table style="text-align: center; width:100%; border: 1px ; cellpadding: 0; cellspacing:0; margin-left: auto; margin-right: auto; border-collapse: collapse; margin-top:1rem;">
                   <tr style="padding: 36px 24px; font-weight:700; padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px; background-color: #d1cece; border-bottom: 3px solid #edebeb; text-align: start; ">
                     <td style="padding: 10px;">No</td>
-                    <td style="padding: 10px;">Passanger</td>
-                    <td style="padding: 10px;">Identity</td>
-                    <td style="padding: 10px;">Seat</td>
+                    <td style="padding: 10px;">Nama</td>
+                    <td style="padding: 10px;">No. Identitas</td>
+                    <td style="padding: 10px;">Tempat Duduk</td>
                   </tr>
                   ${(passengers).map((passenger, index) => {
                     return `
@@ -353,7 +353,7 @@ const printTicket = async (req) => {
                   }).join('')}
                 </table>
               </div>
-              <p>Thanks,<br> Shinzou Team</p>
+              <p>Terima kasih,<br> Tim Shinzou</p>
             </div> 
           </div>
         `
@@ -394,7 +394,7 @@ const addPayment = async (req) => {
           </span>
           <ul style="padding-left: 8px;">
             <li>Nama Pemesan: ${name}</li>
-            <li>Booking Code: ${booking_code}</li>
+            <li>Kode Booking: ${booking_code}</li>
             <li>Metode Pembayaran: ${payment_method}</li>
           </ul>
           <span>Terima kasih,</span> <br />
