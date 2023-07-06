@@ -1,12 +1,12 @@
 const dayjs = require("dayjs");
 const mailService = require("./mail-service");
-const userService = require("./user-service");
 const flightRepository = require("../repositories/flight-repository");
 const notificationRepository = require("../repositories/notification-repository");
 const passengerRepository = require("../repositories/passenger-repository");
 const seatRepository = require("../repositories/seat-repository");
 const transactionRepository = require("../repositories/transaction-repository");
 const ticketRepository = require("../repositories/ticket-repository");
+const userRepository = require("../repositories/user-repository");
 const ApplicationError = require("../errors/ApplicationError");
 
 const generateBookingCode = (length) => {
@@ -162,7 +162,7 @@ const printTicket = async (req) => {
     const { transaction_id } = req.body;
 
     const transaction = await getTransaction(transaction_id);
-    const user = await userService.getUser(transaction.user_id);
+    const user = await userRepository.getUser(transaction.user_id);
 
     const flightDepartureDate = {
       departure: new Date (`${transaction.departureFlight.departure_date} ${transaction.departureFlight.departure_time}`),
