@@ -182,11 +182,11 @@ const printTicket = async (req) => {
 
     // Send ticket to email
     if (transaction.return_flight_id) {
-      await mailService.sendMail(user.email, "Ticket Penerbangan",
+      await mailService.sendMail(user.email, "Tiket Penerbangan",
         `
           <div style=" display: block; max-width: 900px;margin-left: 15%; margin-right: 15%;">
             <div style="text-align: left; margin: 0 auto; max-width: 600px;">
-              <h1 style="font-size: 20px; margin-top: 20px; text-align: center;">Your e-ticket is here!</h1>
+              <h1 style="font-size: 20px; margin-top: 20px; text-align: center;">Tiket Penerbangan</h1>
               <div style="font-size: 14px; text-align: start">
                 <h1 style="font-size: 14px;">
                   Kode Booking: <br> 
@@ -288,7 +288,7 @@ const printTicket = async (req) => {
         `
       );
     } else {
-      await mailService.sendMail(user.email, "Ticket Penerbangan",
+      await mailService.sendMail(user.email, "Tiket Penerbangan",
         `
           <div style=" display: block; margin-left: 15%; margin-right: 15%;">
             <div style="text-align: left; margin: 0 auto;">
@@ -330,7 +330,7 @@ const printTicket = async (req) => {
               </table>
 
               <div style="margin-top: 0px;  color:#082f49; font-size:16px;">
-                <p style="font-weight: 700">Passangers</p>
+                <p style="font-weight: 700">Penumpang</p>
               </div>
               <div style="text-align: center; widht:100%;">
                 <table style="text-align: center; width:100%; border: 1px ; cellpadding: 0; cellspacing:0; margin-left: auto; margin-right: auto; border-collapse: collapse; margin-top:1rem;">
