@@ -529,6 +529,85 @@
         }
       }
     },
+    "/resend-otp/{id}": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Resend otp",
+        "description": "Resend otp.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User id (can be found when registration).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Required fields (otp)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "otp": {
+                    "type": "string",
+                    "example": 234578
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Otp has been sent successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Kode verifikasi telah dikirim"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorize, token is not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Terjadi kesalahan, silakan coba lagi."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/Airport": {
       "get": {
         "tags": [
@@ -3043,6 +3122,101 @@
         }
       }
     },
+    "/print-ticket": {
+      "post": {
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "Print ticket data.",
+        "description": "Print ticket data.",
+        "requestBody": {
+          "description": "Required fields (transaction_id)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "transaction_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "1947416c-91e5-4598-b8a3-c829a5816c54"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Tiket telah berhasil dikirim ke email Anda"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized, bearer token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Token Empty",
+                    "value": {
+                      "status": "Error",
+                      "message": "Required authorization"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Empty fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EmptyToken"
+                    }
+                  ]
+                },
+                "examples": {
+                  "EmptyToken": {
+                    "summary": "Empty Field",
+                    "value": {
+                      "status": "Error",
+                      "message": "invalid input syntax for type uuid"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/transaction/{booking_code}": {
       "put": {
         "tags": [
@@ -3340,6 +3514,10 @@
                   "name": {
                     "type": "string",
                     "example": "Rendy"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "rendy@mail.com"
                   },
                   "phone_number": {
                     "type": "integer",
