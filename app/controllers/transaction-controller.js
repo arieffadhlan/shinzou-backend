@@ -50,6 +50,22 @@ const addTransaction = async (req, res) => {
   }
 }
 
+const printTicket = async (req, res) => {
+  try {
+    await transactionService.printTicket(req);
+
+    res.status(200).json({
+      status: "Success",
+      message: "Tiket telah berhasil dikirim ke email Anda."
+    });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({
+      status: "Error",
+      message: error.message
+    });
+  }
+}
+
 const addPayment = async (req, res) => {
   try {
     await transactionService.addPayment(req);
@@ -70,5 +86,6 @@ module.exports = {
   getTransactions,
   getTransaction,
   addTransaction,
+  printTicket,
   addPayment
 }

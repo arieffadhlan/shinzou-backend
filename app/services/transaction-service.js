@@ -1,4 +1,6 @@
+const dayjs = require("dayjs");
 const mailService = require("./mail-service");
+const userService = require("./user-service");
 const flightRepository = require("../repositories/flight-repository");
 const notificationRepository = require("../repositories/notification-repository");
 const passengerRepository = require("../repositories/passenger-repository");
@@ -155,6 +157,217 @@ const addTransaction = async (req) => {
   }
 }
 
+const printTicket = async (req) => {
+  try {
+    const { transaction_id } = req.body;
+
+    const transaction = await getTransaction(transaction_id);
+    const user = await userService.getUser(transaction.user_id);
+
+    const flightDepartureDate = {
+      departure: new Date (`${transaction.departureFlight.departure_date} ${transaction.departureFlight.departure_time}`),
+      arrival: new Date (`${transaction.departureFlight.arrival_date} ${transaction.departureFlight.arrival_time}`),
+    }
+
+    // Get passengers
+    let passengers = [];    
+    transaction.tickets.map((ticket) => {
+      if (ticket.seat.flight_id === transaction.departure_flight_id) {
+        passengers.push({
+          name: ticket.passenger.name,
+          identity_number: ticket.passenger.identity_number,
+          seat_number: ticket.seat.seat_number
+        });
+      }
+    });
+
+    // Send ticket to email
+    if (transaction.return_flight_id) {
+      await mailService.sendMail(user.email, "Flight Ticket",
+        `
+          <div style=" display: block; max-width: 900px;margin-left: 15%; margin-right: 15%;">
+            <div style="text-align: left; margin: 0 auto; max-width: 600px;">
+              <h1 style="font-size: 20px; margin-top: 20px; text-align: center;">Your e-ticket is here!</h1>
+              <div style="font-size: 14px; text-align: start">
+                <h1 style="font-size: 14px;">
+                  Booking Code: <br> 
+                  ${transaction.booking_code}
+                </h1>
+                <span>
+                  Name: ${user.name}<br>
+                  Phone Number: ${user.phone_number}<br>
+                  Email: ${user.email}
+                </span>
+              </div>
+
+              <div style="margin-top: 20px; margin-buttom:0px;  color:#082f49; font-size:16px;">
+                <p style="font-weight: 700">Departure Flight</p>
+              </div>
+              <table  style="text-align: center; width:100%; border: 5px; cellpadding: 0; cellspacing:0; margin-left: auto; margin-right: auto; border-collapse: collapse; ">
+                <tr class="font" align="center" valign="top"  style="padding: 36px 24px; font-weight:700; padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px; background-color: #d1cece; border-bottom: 3px solid #edebeb; text-align: start; ">
+                  <td style="padding: 10px;">Airline</td>
+                  <td style="padding: 10px;">Type</td>
+                  <td style="padding: 10px;">Departure</td>
+                  <td style="padding: 10px;">Arrival</td>
+                </tr>
+                <tr  style="padding:1rem; font-weight:200; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px;background-color: #eae8e8; text-align: start; ">
+                  <td style="padding: 10px;">${transaction.departureFlight.airline.airline_name} <br> (${transaction.departureFlight.airline.airline_code})</</td>
+                  <td style="padding: 10px;">${transaction.departureFlight.class}</</td>
+                  <td style="padding: 10px;">${new Date (`${transaction.departureFlight.departure_date} ${transaction.departureFlight.departure_time}`)} <br> ${transaction.departureFlight.originAirport.airport_name} (${transaction.departureFlight.originAirport.airport_code}) </</td>
+                  <td style="padding: 10px;">${new Date (`${transaction.departureFlight.arrival_date} ${transaction.departureFlight.arrival_time}`)} <br> ${transaction.departureFlight.destinationAirport.airport_name} (${transaction.departureFlight.destinationAirport.airport_code}) </td>
+                </tr>
+              </table>
+
+              <div style="margin-top: 0px;  color:#082f49; font-size:16px;">
+                <p style="font-weight: 700">Passangers</p>
+              </div>
+              <div style="text-align: center; widht:100%;">
+                <table style="text-align: center; width:100%; border: 1px ; cellpadding: 0; cellspacing:0; margin-left: auto; margin-right: auto; border-collapse: collapse; margin-top:1rem;">
+                  <tr style="padding: 36px 24px; font-weight:700; padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px; background-color: #d1cece; border-bottom: 3px solid #edebeb; text-align: start; ">
+                    <td style="padding: 10px;">No</td>
+                    <td style="padding: 10px;">Passanger</td>
+                    <td style="padding: 10px;">Identity</td>
+                    <td style="padding: 10px;">Seat</td>
+                  </tr>
+                  ${(passengers).map((passenger, index) => {
+                    return `
+                        <tr key=${index} style="padding:1rem; font-weight:200; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px;background-color: #eae8e8; text-align: start; ">
+                          <td style="padding: 10px;">${index + 1}</</td>
+                          <td style="padding: 10px;">${passenger.name}</</td>
+                          <td style="padding: 10px;">${passenger.identity_number}</</td>
+                          <td style="padding: 10px;">${passenger.seat_number}</td>
+                        </tr>
+                      `
+                  }).join('')}
+                </table>
+              </div>
+
+              <div style="margin-top: 10px; margin-buttom:0px;  color:#082f49; font-size:16px;">
+                <p style="font-weight: 700">Return Flight</p>
+              </div>
+              <table  style="text-align: center; width:100%; border: 5px; cellpadding: 0; cellspacing:0; margin-left: auto; margin-right: auto; border-collapse: collapse; ">
+                <tr class="font" align="center" valign="top"  style="padding: 36px 24px; font-weight:700; padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px; background-color: #d1cece; border-bottom: 3px solid #edebeb; text-align: start; ">
+                  <td style="padding: 10px;">Airline</td>
+                  <td style="padding: 10px;">Type</td>
+                  <td style="padding: 10px;">Departure</td>
+                  <td style="padding: 10px;">Arrival</td>
+                </tr>
+                <tr  style="padding:1rem; font-weight:200; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px;background-color: #eae8e8; text-align: start; ">
+                  <td style="padding: 10px;">${transaction.returnFlight.airline.airline_name} <br> (${transaction.returnFlight.airline.airline_code})</</td>
+                  <td style="padding: 10px;">${transaction.returnFlight.class}</</td>
+                  <td style="padding: 10px;">${new Date (`${transaction.returnFlight.departure_date} ${transaction.returnFlight.departure_time}`)}<br> ${transaction.returnFlight.originAirport.airport_name} (${transaction.returnFlight.originAirport.airport_code}) </</td>
+                  <td style="padding: 10px;">${new Date (`${transaction.returnFlight.arrival_date} ${transaction.returnFlight.arrival_time}`)} <br> ${transaction.returnFlight.destinationAirport.airport_name} (${transaction.returnFlight.destinationAirport.airport_code}) </td>
+                </tr>
+              </table>
+
+              <div style="margin-top: 0px;  color:#082f49; font-size:16px;">
+                <p style="font-weight: 700">Passangers</p>
+              </div>
+              <div style="widht:100%;">
+                <table style="text-align: center; width:100%; border: 1px ; cellpadding: 0; cellspacing:0; margin-left: auto; margin-right: auto; border-collapse: collapse; ">
+                  <tr style="padding: 36px 24px; font-weight:700; padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px; background-color: #d1cece; border-bottom: 3px solid #edebeb; text-align: start; ">
+                    <th style="padding: 10px;">No</th>
+                    <th style="padding: 10px;">Passanger</th>
+                    <th style="padding: 10px;">Identity</th>
+                    <th style="padding: 10px;">Seat</th>
+                  </tr>
+                  ${(passengers).map((passenger, index) => {
+                    return `
+                        <tr key=${index} style="padding:1rem; font-weight:200; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px;background-color: #eae8e8; text-align: start; ">
+                          <td style="padding: 10px;">${index + 1}</</td>
+                          <td style="padding: 10px;">${passenger.name}</</td>
+                          <td style="padding: 10px;">${passenger.identity_number}</</td>
+                          <td style="padding: 10px;">${passenger.seat_number}</td>
+                        </tr>
+                      `
+                  }).join('')}
+                </table>
+              </div>
+              <p>Thanks,<br> Shinzou Team</p>
+            </div> 
+          </div>
+        `
+      );
+    } else {
+      await mailService.sendMail(user.email, "Flight Ticket",
+        `
+          <div style=" display: block; margin-left: 15%; margin-right: 15%;">
+            <div style="text-align: left; margin: 0 auto;">
+              <h1 style="font-size: 20px; margin-top: 20px; text-align: center;">Your e-ticket is here!</h1>
+              <div style="font-size: 14px; text-align: start">
+                <h1 style="font-size: 14px;">
+                  Booking Code: <br> 
+                  ${transaction.booking_code}
+                </h1>
+                <span>
+                  Name: ${user.name}<br>
+                  Phone Number: ${user.phone_number}<br>
+                  Email: ${user.email}
+                </span>
+              </div>
+                  
+              <div style="margin-top: 20px; margin-buttom:0px;  color:#082f49; font-size:16px;">
+                <p style="font-weight: 700">Departure Flight</p>
+              </div>
+              <table  style="text-align: center; width:100%; border: 5px; cellpadding: 0; cellspacing:0; margin-left: auto; margin-right: auto; border-collapse: collapse; ">      
+                <tr class="font" align="center" valign="top"  style="padding: 36px 24px; font-weight:700; padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px; background-color: #d1cece; border-bottom: 3px solid #edebeb; text-align: start; ">
+                  <td style="padding: 10px;">Airline</td>
+                  <td style="padding: 10px;">Class</td>
+                  <td style="padding: 10px;">Departure</td>
+                  <td style="padding: 10px;">Arrival</td>
+                </tr>
+                <tr  style="padding:1rem; font-weight:200; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px;background-color: #eae8e8; text-align: start; ">
+                  <td style="padding: 10px;">${transaction.departureFlight.airline.airline_name} <br> (${transaction.departureFlight.airline.airline_code})</</td>
+                  <td style="padding: 10px;">${transaction.departureFlight.class}</</td>
+                  <td style="padding: 10px;">
+                    ${dayjs(flightDepartureDate.departure).format("DD MMMM YYYY")} ${dayjs(flightDepartureDate.departure).format("HH:mm")} <br> 
+                    ${transaction.departureFlight.originAirport.airport_name} (${transaction.departureFlight.originAirport.airport_code}) 
+                  </td>
+                  <td style="padding: 10px;">
+                    ${dayjs(flightDepartureDate.arrival).format("DD MMMM YYYY")} ${dayjs(flightDepartureDate.arrival).format("HH:mm")} <br> 
+                    ${transaction.departureFlight.destinationAirport.airport_name} (${transaction.departureFlight.destinationAirport.airport_code}) 
+                  </td>
+                </tr>
+              </table>
+
+              <div style="margin-top: 0px;  color:#082f49; font-size:16px;">
+                <p style="font-weight: 700">Passangers</p>
+              </div>
+              <div style="text-align: center; widht:100%;">
+                <table style="text-align: center; width:100%; border: 1px ; cellpadding: 0; cellspacing:0; margin-left: auto; margin-right: auto; border-collapse: collapse; margin-top:1rem;">
+                  <tr style="padding: 36px 24px; font-weight:700; padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px; background-color: #d1cece; border-bottom: 3px solid #edebeb; text-align: start; ">
+                    <td style="padding: 10px;">No</td>
+                    <td style="padding: 10px;">Passanger</td>
+                    <td style="padding: 10px;">Identity</td>
+                    <td style="padding: 10px;">Seat</td>
+                  </tr>
+                  ${(passengers).map((passenger, index) => {
+                    return `
+                        <tr key=${index} style="padding:1rem; font-weight:200; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px;background-color: #eae8e8; text-align: start; ">
+                          <td style="padding: 10px;">${index + 1}</</td>
+                          <td style="padding: 10px;">${passenger.name}</</td>
+                          <td style="padding: 10px;">${passenger.identity_number}</</td>
+                          <td style="padding: 10px;">${passenger.seat_number}</td>
+                        </tr>
+                      `
+                  }).join('')}
+                </table>
+              </div>
+              <p>Thanks,<br> Shinzou Team</p>
+            </div> 
+          </div>
+        `
+      );
+    }
+  } catch (error) {
+    if (error instanceof ApplicationError) {
+      throw new ApplicationError(error.statusCode, error.message);
+    } else {
+      throw new Error(error.message);
+    }
+  }
+}
+
 const addPayment = async (req) => {
   try {
     const { booking_code } = req.params;
@@ -202,5 +415,6 @@ module.exports = {
   getTransactions,
   getTransaction,
   addTransaction,
+  printTicket,
   addPayment
 }

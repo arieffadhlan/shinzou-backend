@@ -51,6 +51,7 @@ router.get("/api/v1/transaction", middlewares.authorize, controllers.transaction
 router.get("/api/v1/transaction/:id", middlewares.authorize, controllers.transactionController.getTransaction);
 // Checkout
 router.post("/api/v1/transaction", middlewares.authorize, controllers.transactionController.addTransaction);
+router.post("/api/v1/print-ticket", middlewares.authorize, controllers.transactionController.printTicket);
 // Payment
 router.put("/api/v1/transaction/:booking_code", middlewares.authorize, controllers.transactionController.addPayment);
 
