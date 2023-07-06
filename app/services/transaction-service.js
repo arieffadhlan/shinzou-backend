@@ -139,8 +139,7 @@ const addTransaction = async (req) => {
             <li>Virtual Account</li>
             <li>Credit Card</li>
           </ul>
-          <span>Setelah melakukan pembayaran, silakan konfirmasi pembayaran kamu dengan menekan tombol berikut.</span> <br /> <br />
-          <a href="http://localhost:3000/payment/${booking_code}" style="color: #222">Konfirmasi Pembayaran</a> <br /> <br />
+          <span>Setelah melakukan pembayaran, silakan konfirmasi pembayaran kamu.</span> <br /> <br />
           <span>Terima kasih,</span> <br />
           <span>Tim Shinzou</span>
         </div>
