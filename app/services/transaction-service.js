@@ -167,6 +167,14 @@ const printTicket = async (req) => {
       departure: new Date (`${transaction.departureFlight.departure_date} ${transaction.departureFlight.departure_time}`),
       arrival: new Date (`${transaction.departureFlight.arrival_date} ${transaction.departureFlight.arrival_time}`),
     }
+    
+    let flightReturnDate;
+    if (transaction.return_flight_id) {
+      flightReturnDate = {
+        departure: new Date (`${transaction.returnFlight.departure_date} ${transaction.returnFlight.departure_time}`),
+        arrival: new Date (`${transaction.returnFlight.arrival_date} ${transaction.returnFlight.arrival_time}`),
+      }
+    }
 
     // Get passengers
     let passengers = [];    
@@ -212,8 +220,14 @@ const printTicket = async (req) => {
                 <tr  style="padding:1rem; font-weight:200; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px;background-color: #eae8e8; text-align: start; ">
                   <td style="padding: 10px;">${transaction.departureFlight.airline.airline_name} <br> (${transaction.departureFlight.airline.airline_code})</</td>
                   <td style="padding: 10px;">${transaction.departureFlight.class}</</td>
-                  <td style="padding: 10px;">${new Date (`${transaction.departureFlight.departure_date} ${transaction.departureFlight.departure_time}`)} <br> ${transaction.departureFlight.originAirport.airport_name} (${transaction.departureFlight.originAirport.airport_code}) </</td>
-                  <td style="padding: 10px;">${new Date (`${transaction.departureFlight.arrival_date} ${transaction.departureFlight.arrival_time}`)} <br> ${transaction.departureFlight.destinationAirport.airport_name} (${transaction.departureFlight.destinationAirport.airport_code}) </td>
+                  <td style="padding: 10px;">
+                    ${dayjs(flightDepartureDate.departure).format("DD MMMM YYYY")} ${dayjs(flightDepartureDate.departure).format("HH:mm")} <br> 
+                    ${transaction.departureFlight.originAirport.airport_name} (${transaction.departureFlight.originAirport.airport_code}) 
+                  </td>
+                  <td style="padding: 10px;">
+                    ${dayjs(flightDepartureDate.arrival).format("DD MMMM YYYY")} ${dayjs(flightDepartureDate.arrival).format("HH:mm")} <br> 
+                    ${transaction.departureFlight.destinationAirport.airport_name} (${transaction.departureFlight.destinationAirport.airport_code}) 
+                  </td>
                 </tr>
               </table>
 
@@ -256,6 +270,14 @@ const printTicket = async (req) => {
                   <td style="padding: 10px;">${transaction.returnFlight.class}</</td>
                   <td style="padding: 10px;">${new Date (`${transaction.returnFlight.departure_date} ${transaction.returnFlight.departure_time}`)}<br> ${transaction.returnFlight.originAirport.airport_name} (${transaction.returnFlight.originAirport.airport_code}) </</td>
                   <td style="padding: 10px;">${new Date (`${transaction.returnFlight.arrival_date} ${transaction.returnFlight.arrival_time}`)} <br> ${transaction.returnFlight.destinationAirport.airport_name} (${transaction.returnFlight.destinationAirport.airport_code}) </td>
+                  <td style="padding: 10px;">
+                    ${dayjs(flightReturnDate.departure).format("DD MMMM YYYY")} ${dayjs(flightReturnDate.departure).format("HH:mm")} <br> 
+                    ${transaction.returnFlight.originAirport.airport_name} (${transaction.returnFlight.originAirport.airport_code}) 
+                  </td>
+                  <td style="padding: 10px;">
+                    ${dayjs(flightReturnDate.arrival).format("DD MMMM YYYY")} ${dayjs(flightReturnDate.arrival).format("HH:mm")} <br> 
+                    ${transaction.returnFlight.destinationAirport.airport_name} (${transaction.returnFlight.destinationAirport.airport_code}) 
+                  </td>
                 </tr>
               </table>
 
