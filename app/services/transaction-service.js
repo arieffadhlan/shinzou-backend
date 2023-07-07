@@ -268,8 +268,6 @@ const printTicket = async (req) => {
                 <tr  style="padding:1rem; font-weight:200; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 12px; line-height: 24px;background-color: #eae8e8; text-align: start; ">
                   <td style="padding: 10px;">${transaction.returnFlight.airline.airline_name} <br> (${transaction.returnFlight.airline.airline_code})</</td>
                   <td style="padding: 10px;">${transaction.returnFlight.class}</</td>
-                  <td style="padding: 10px;">${new Date (`${transaction.returnFlight.departure_date} ${transaction.returnFlight.departure_time}`)}<br> ${transaction.returnFlight.originAirport.airport_name} (${transaction.returnFlight.originAirport.airport_code}) </</td>
-                  <td style="padding: 10px;">${new Date (`${transaction.returnFlight.arrival_date} ${transaction.returnFlight.arrival_time}`)} <br> ${transaction.returnFlight.destinationAirport.airport_name} (${transaction.returnFlight.destinationAirport.airport_code}) </td>
                   <td style="padding: 10px;">
                     ${dayjs(flightReturnDate.departure).format("DD MMMM YYYY")} ${dayjs(flightReturnDate.departure).format("HH:mm")} <br> 
                     ${transaction.returnFlight.originAirport.airport_name} (${transaction.returnFlight.originAirport.airport_code}) 
