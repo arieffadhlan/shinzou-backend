@@ -60,4 +60,5 @@ router.put("/api/v1/transaction/:booking_code", middlewares.authorize, controlle
 router.get("/api/v1/notification", middlewares.authorize, controllers.notificationController.getNotifications);
 router.get("/api/v1/notification/mark-as-read", middlewares.authorize, controllers.notificationController.markAsRead);
 
+
 module.exports = router;
